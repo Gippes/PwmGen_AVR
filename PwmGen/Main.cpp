@@ -3,11 +3,11 @@ PWM pwm;
 
 int main( void )
 {
-	//peiph_init();
+	peiph_init();
 
-	lcd_init();
-	lcd_clrscr();
-	lcd_puts("Hello World...");
+// 	lcd_init();
+// 	lcd_clrscr();
+// 	lcd_puts("Hello World...");
 	
 	sei();
 	
