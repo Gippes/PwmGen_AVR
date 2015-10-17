@@ -1,0 +1,1563 @@
+
+PwmGen.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000724  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000018  00800060  00000724  000007b8  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          0000001a  00800078  00800078  000007d0  2**0
+                  ALLOC
+  3 .stab         000006cc  00000000  00000000  000007d0  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  4 .stabstr      00000097  00000000  00000000  00000e9c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .comment      0000002f  00000000  00000000  00000f33  2**0
+                  CONTENTS, READONLY
+  6 .debug_aranges 00000110  00000000  00000000  00000f62  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_info   000010c0  00000000  00000000  00001072  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_abbrev 00000714  00000000  00000000  00002132  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_line   00000662  00000000  00000000  00002846  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_frame  00000250  00000000  00000000  00002ea8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_str    000004a5  00000000  00000000  000030f8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_loc    00000636  00000000  00000000  0000359d  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 13 .debug_ranges 000000e8  00000000  00000000  00003bd3  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+#include "periph_init.h"
+
+void peiph_init()
+{
+	DDRB =	BIT3;									// ШИМ
+   0:	0c 94 2c 00 	jmp	0x58	; 0x58 <__dtors_end>
+	DDRD =	BIT4 | BIT5;							// светодиоды
+   4:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+	PORTD = BIT2 | BIT3 | BIT6;						// кнопки
+   8:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+	PORTB = BIT1 | BIT2;							// энкодер	
+   c:	0c 94 56 00 	jmp	0xac	; 0xac <__vector_3>
+	//GICR =	(1<<INT0);								// PD2(16)
+	//MCUCR =	(1<<ISC01) | (0<<ISC00);				// по спаду 
+	
+	//ADC initial
+	ADMUX	=	(1<<ADLAR)|							// выравнивание по левому краю
+				(0<<REFS1)|(1<<REFS0);				// опорное напряжение от внешнего источника питания
+  10:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+	
+	SFIOR	=	(0<<ADTS2)|(0<<ADTS1)|(0<<ADTS0);	// преобразование по прерыванию TIM0 OCR0
+  14:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+	
+	ADCSRA	=	(1<<ADEN); 							// ADC ON
+  18:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+				//(1<<ADSC) |						// включение преобразования (сбрасывается по окончанию) 
+				//(1<<ADATE);						// автоматическое включение преобразований
+
+	//TIM2 initial periodic system timer
+	TIMSK |= (1<<OCIE2);							// прерывание по сравнению
+  1c:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+	TCCR2 = (1<<FOC2) |								// режим NORMAL
+			(0<<CS22) |(1<<CS21) |(1<<CS20);		// clk/256
+  20:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+	TCNT2 = 0;										// обнуление счётного регистра
+  24:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+	OCR2  = 125;									// регистр сравнения
+  28:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+  2c:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+  30:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+  34:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+  38:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+  3c:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+  40:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+  44:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+  48:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+  4c:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+  50:	0c 94 54 00 	jmp	0xa8	; 0xa8 <__bad_interrupt>
+
+00000054 <__ctors_start>:
+  54:	b4 02       	muls	r27, r20
+
+00000056 <__ctors_end>:
+  56:	bb 02       	muls	r27, r27
+
+00000058 <__dtors_end>:
+  58:	11 24       	eor	r1, r1
+  5a:	1f be       	out	0x3f, r1	; 63
+  5c:	cf e5       	ldi	r28, 0x5F	; 95
+  5e:	d4 e0       	ldi	r29, 0x04	; 4
+  60:	de bf       	out	0x3e, r29	; 62
+  62:	cd bf       	out	0x3d, r28	; 61
+
+00000064 <__do_copy_data>:
+  64:	10 e0       	ldi	r17, 0x00	; 0
+  66:	a0 e6       	ldi	r26, 0x60	; 96
+  68:	b0 e0       	ldi	r27, 0x00	; 0
+  6a:	e4 e2       	ldi	r30, 0x24	; 36
+  6c:	f7 e0       	ldi	r31, 0x07	; 7
+  6e:	02 c0       	rjmp	.+4      	; 0x74 <__do_copy_data+0x10>
+  70:	05 90       	lpm	r0, Z+
+  72:	0d 92       	st	X+, r0
+  74:	a8 37       	cpi	r26, 0x78	; 120
+  76:	b1 07       	cpc	r27, r17
+  78:	d9 f7       	brne	.-10     	; 0x70 <__do_copy_data+0xc>
+
+0000007a <__do_clear_bss>:
+  7a:	20 e0       	ldi	r18, 0x00	; 0
+  7c:	a8 e7       	ldi	r26, 0x78	; 120
+  7e:	b0 e0       	ldi	r27, 0x00	; 0
+  80:	01 c0       	rjmp	.+2      	; 0x84 <.do_clear_bss_start>
+
+00000082 <.do_clear_bss_loop>:
+  82:	1d 92       	st	X+, r1
+
+00000084 <.do_clear_bss_start>:
+  84:	a2 39       	cpi	r26, 0x92	; 146
+  86:	b2 07       	cpc	r27, r18
+  88:	e1 f7       	brne	.-8      	; 0x82 <.do_clear_bss_loop>
+
+0000008a <__do_global_ctors>:
+  8a:	10 e0       	ldi	r17, 0x00	; 0
+  8c:	c6 e5       	ldi	r28, 0x56	; 86
+  8e:	d0 e0       	ldi	r29, 0x00	; 0
+  90:	04 c0       	rjmp	.+8      	; 0x9a <__do_global_ctors+0x10>
+  92:	22 97       	sbiw	r28, 0x02	; 2
+  94:	fe 01       	movw	r30, r28
+  96:	0e 94 81 03 	call	0x702	; 0x702 <__tablejump__>
+  9a:	c4 35       	cpi	r28, 0x54	; 84
+  9c:	d1 07       	cpc	r29, r17
+  9e:	c9 f7       	brne	.-14     	; 0x92 <__do_global_ctors+0x8>
+  a0:	0e 94 8a 02 	call	0x514	; 0x514 <main>
+  a4:	0c 94 85 03 	jmp	0x70a	; 0x70a <__do_global_dtors>
+
+000000a8 <__bad_interrupt>:
+  a8:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+000000ac <__vector_3>:
+Button pwm_mode_select = {0,70};
+Encoder enc = {0,0,0};
+
+/* Диспетчер */
+ISR(TIMER2_COMP_vect)
+{
+  ac:	1f 92       	push	r1
+  ae:	0f 92       	push	r0
+  b0:	0f b6       	in	r0, 0x3f	; 63
+  b2:	0f 92       	push	r0
+  b4:	11 24       	eor	r1, r1
+  b6:	2f 93       	push	r18
+  b8:	3f 93       	push	r19
+  ba:	4f 93       	push	r20
+  bc:	5f 93       	push	r21
+  be:	6f 93       	push	r22
+  c0:	7f 93       	push	r23
+  c2:	8f 93       	push	r24
+  c4:	9f 93       	push	r25
+  c6:	af 93       	push	r26
+  c8:	bf 93       	push	r27
+  ca:	ef 93       	push	r30
+  cc:	ff 93       	push	r31
+  ce:	cf 93       	push	r28
+  d0:	df 93       	push	r29
+  d2:	1f 92       	push	r1
+  d4:	cd b7       	in	r28, 0x3d	; 61
+  d6:	de b7       	in	r29, 0x3e	; 62
+	TCNT0 = 0;
+  d8:	12 be       	out	0x32, r1	; 50
+	//делитель clk
+	if(push_button(PIND, 6, freq_div))
+  da:	80 b3       	in	r24, 0x10	; 16
+  dc:	44 e6       	ldi	r20, 0x64	; 100
+  de:	50 e0       	ldi	r21, 0x00	; 0
+  e0:	66 e0       	ldi	r22, 0x06	; 6
+  e2:	0e 94 94 02 	call	0x528	; 0x528 <_Z11push_buttonhhR6Button>
+  e6:	88 23       	and	r24, r24
+  e8:	e9 f0       	breq	.+58     	; 0x124 <__vector_3+0x78>
+	{
+		if(state.prescaller > 4)
+  ea:	80 91 7b 00 	lds	r24, 0x007B
+  ee:	87 70       	andi	r24, 0x07	; 7
+  f0:	90 e0       	ldi	r25, 0x00	; 0
+  f2:	05 97       	sbiw	r24, 0x05	; 5
+  f4:	2c f0       	brlt	.+10     	; 0x100 <__vector_3+0x54>
+			state.prescaller = 0;
+  f6:	eb e7       	ldi	r30, 0x7B	; 123
+  f8:	f0 e0       	ldi	r31, 0x00	; 0
+  fa:	80 81       	ld	r24, Z
+  fc:	88 7f       	andi	r24, 0xF8	; 248
+  fe:	80 83       	st	Z, r24
+		pwm.set_prescaler(state.prescaller++);
+ 100:	eb e7       	ldi	r30, 0x7B	; 123
+ 102:	f0 e0       	ldi	r31, 0x00	; 0
+ 104:	80 81       	ld	r24, Z
+ 106:	98 2f       	mov	r25, r24
+ 108:	97 70       	andi	r25, 0x07	; 7
+ 10a:	99 83       	std	Y+1, r25	; 0x01
+ 10c:	9f 5f       	subi	r25, 0xFF	; 255
+ 10e:	97 70       	andi	r25, 0x07	; 7
+ 110:	88 7f       	andi	r24, 0xF8	; 248
+ 112:	89 2b       	or	r24, r25
+ 114:	80 83       	st	Z, r24
+ 116:	be 01       	movw	r22, r28
+ 118:	6f 5f       	subi	r22, 0xFF	; 255
+ 11a:	7f 4f       	sbci	r23, 0xFF	; 255
+ 11c:	8d e7       	ldi	r24, 0x7D	; 125
+ 11e:	90 e0       	ldi	r25, 0x00	; 0
+ 120:	0e 94 e3 02 	call	0x5c6	; 0x5c6 <_ZN3PWM13set_prescalerERKh>
+	}
+	
+	//коэфф. инкремента 
+	if (push_button(PIND, 3, mult_div))
+ 124:	80 b3       	in	r24, 0x10	; 16
+ 126:	42 e6       	ldi	r20, 0x62	; 98
+ 128:	50 e0       	ldi	r21, 0x00	; 0
+ 12a:	63 e0       	ldi	r22, 0x03	; 3
+ 12c:	0e 94 94 02 	call	0x528	; 0x528 <_Z11push_buttonhhR6Button>
+ 130:	88 23       	and	r24, r24
+ 132:	09 f4       	brne	.+2      	; 0x136 <__vector_3+0x8a>
+ 134:	46 c0       	rjmp	.+140    	; 0x1c2 <__vector_3+0x116>
+	{
+		if(state.coeff > 4)
+ 136:	20 91 7b 00 	lds	r18, 0x007B
+ 13a:	26 95       	lsr	r18
+ 13c:	26 95       	lsr	r18
+ 13e:	26 95       	lsr	r18
+ 140:	27 70       	andi	r18, 0x07	; 7
+ 142:	82 2f       	mov	r24, r18
+ 144:	90 e0       	ldi	r25, 0x00	; 0
+ 146:	85 30       	cpi	r24, 0x05	; 5
+ 148:	91 05       	cpc	r25, r1
+ 14a:	3c f0       	brlt	.+14     	; 0x15a <__vector_3+0xae>
+			state.coeff = 0;
+		switch(state.coeff++)
+ 14c:	eb e7       	ldi	r30, 0x7B	; 123
+ 14e:	f0 e0       	ldi	r31, 0x00	; 0
+ 150:	80 81       	ld	r24, Z
+ 152:	87 7c       	andi	r24, 0xC7	; 199
+ 154:	88 60       	ori	r24, 0x08	; 8
+ 156:	80 83       	st	Z, r24
+ 158:	19 c0       	rjmp	.+50     	; 0x18c <__vector_3+0xe0>
+ 15a:	32 2f       	mov	r19, r18
+ 15c:	3f 5f       	subi	r19, 0xFF	; 255
+ 15e:	37 70       	andi	r19, 0x07	; 7
+ 160:	eb e7       	ldi	r30, 0x7B	; 123
+ 162:	f0 e0       	ldi	r31, 0x00	; 0
+ 164:	33 0f       	add	r19, r19
+ 166:	33 0f       	add	r19, r19
+ 168:	33 0f       	add	r19, r19
+ 16a:	20 81       	ld	r18, Z
+ 16c:	27 7c       	andi	r18, 0xC7	; 199
+ 16e:	23 2b       	or	r18, r19
+ 170:	20 83       	st	Z, r18
+ 172:	81 30       	cpi	r24, 0x01	; 1
+ 174:	91 05       	cpc	r25, r1
+ 176:	89 f0       	breq	.+34     	; 0x19a <__vector_3+0xee>
+ 178:	1c f4       	brge	.+6      	; 0x180 <__vector_3+0xd4>
+ 17a:	89 2b       	or	r24, r25
+ 17c:	39 f0       	breq	.+14     	; 0x18c <__vector_3+0xe0>
+ 17e:	21 c0       	rjmp	.+66     	; 0x1c2 <__vector_3+0x116>
+ 180:	82 30       	cpi	r24, 0x02	; 2
+ 182:	91 05       	cpc	r25, r1
+ 184:	89 f0       	breq	.+34     	; 0x1a8 <__vector_3+0xfc>
+ 186:	03 97       	sbiw	r24, 0x03	; 3
+ 188:	e1 f4       	brne	.+56     	; 0x1c2 <__vector_3+0x116>
+ 18a:	15 c0       	rjmp	.+42     	; 0x1b6 <__vector_3+0x10a>
+		{
+			case 0: coeff = 1;		break;
+ 18c:	81 e0       	ldi	r24, 0x01	; 1
+ 18e:	90 e0       	ldi	r25, 0x00	; 0
+ 190:	90 93 67 00 	sts	0x0067, r25
+ 194:	80 93 66 00 	sts	0x0066, r24
+ 198:	14 c0       	rjmp	.+40     	; 0x1c2 <__vector_3+0x116>
+			case 1: coeff = 10;		break;
+ 19a:	8a e0       	ldi	r24, 0x0A	; 10
+ 19c:	90 e0       	ldi	r25, 0x00	; 0
+ 19e:	90 93 67 00 	sts	0x0067, r25
+ 1a2:	80 93 66 00 	sts	0x0066, r24
+ 1a6:	0d c0       	rjmp	.+26     	; 0x1c2 <__vector_3+0x116>
+			case 2: coeff = 100;	break;
+ 1a8:	84 e6       	ldi	r24, 0x64	; 100
+ 1aa:	90 e0       	ldi	r25, 0x00	; 0
+ 1ac:	90 93 67 00 	sts	0x0067, r25
+ 1b0:	80 93 66 00 	sts	0x0066, r24
+ 1b4:	06 c0       	rjmp	.+12     	; 0x1c2 <__vector_3+0x116>
+			case 3: coeff = 1000;	break;
+ 1b6:	88 ee       	ldi	r24, 0xE8	; 232
+ 1b8:	93 e0       	ldi	r25, 0x03	; 3
+ 1ba:	90 93 67 00 	sts	0x0067, r25
+ 1be:	80 93 66 00 	sts	0x0066, r24
+		}
+	}
+	
+	if(push_button(PIND, 2, pwm_mode_select))
+ 1c2:	80 b3       	in	r24, 0x10	; 16
+ 1c4:	40 e6       	ldi	r20, 0x60	; 96
+ 1c6:	50 e0       	ldi	r21, 0x00	; 0
+ 1c8:	62 e0       	ldi	r22, 0x02	; 2
+ 1ca:	0e 94 94 02 	call	0x528	; 0x528 <_Z11push_buttonhhR6Button>
+ 1ce:	88 23       	and	r24, r24
+ 1d0:	09 f4       	brne	.+2      	; 0x1d4 <__vector_3+0x128>
+ 1d2:	56 c0       	rjmp	.+172    	; 0x280 <__vector_3+0x1d4>
+	{
+		if(state.pwm_mode > 3)
+ 1d4:	80 91 7b 00 	lds	r24, 0x007B
+ 1d8:	82 95       	swap	r24
+ 1da:	86 95       	lsr	r24
+ 1dc:	86 95       	lsr	r24
+ 1de:	83 70       	andi	r24, 0x03	; 3
+ 1e0:	20 91 7c 00 	lds	r18, 0x007C
+ 1e4:	21 70       	andi	r18, 0x01	; 1
+ 1e6:	22 0f       	add	r18, r18
+ 1e8:	22 0f       	add	r18, r18
+ 1ea:	28 2b       	or	r18, r24
+ 1ec:	82 2f       	mov	r24, r18
+ 1ee:	90 e0       	ldi	r25, 0x00	; 0
+ 1f0:	84 30       	cpi	r24, 0x04	; 4
+ 1f2:	91 05       	cpc	r25, r1
+ 1f4:	64 f0       	brlt	.+24     	; 0x20e <__vector_3+0x162>
+			state.pwm_mode = 0;
+		switch(state.pwm_mode++)
+ 1f6:	eb e7       	ldi	r30, 0x7B	; 123
+ 1f8:	f0 e0       	ldi	r31, 0x00	; 0
+ 1fa:	80 81       	ld	r24, Z
+ 1fc:	8f 73       	andi	r24, 0x3F	; 63
+ 1fe:	80 64       	ori	r24, 0x40	; 64
+ 200:	80 83       	st	Z, r24
+ 202:	ec e7       	ldi	r30, 0x7C	; 124
+ 204:	f0 e0       	ldi	r31, 0x00	; 0
+ 206:	80 81       	ld	r24, Z
+ 208:	8e 7f       	andi	r24, 0xFE	; 254
+ 20a:	80 83       	st	Z, r24
+ 20c:	22 c0       	rjmp	.+68     	; 0x252 <__vector_3+0x1a6>
+ 20e:	2f 5f       	subi	r18, 0xFF	; 255
+ 210:	eb e7       	ldi	r30, 0x7B	; 123
+ 212:	f0 e0       	ldi	r31, 0x00	; 0
+ 214:	42 2f       	mov	r20, r18
+ 216:	42 95       	swap	r20
+ 218:	44 0f       	add	r20, r20
+ 21a:	44 0f       	add	r20, r20
+ 21c:	40 7c       	andi	r20, 0xC0	; 192
+ 21e:	30 81       	ld	r19, Z
+ 220:	3f 73       	andi	r19, 0x3F	; 63
+ 222:	34 2b       	or	r19, r20
+ 224:	30 83       	st	Z, r19
+ 226:	22 fb       	bst	r18, 2
+ 228:	33 27       	eor	r19, r19
+ 22a:	30 f9       	bld	r19, 0
+ 22c:	ec e7       	ldi	r30, 0x7C	; 124
+ 22e:	f0 e0       	ldi	r31, 0x00	; 0
+ 230:	20 81       	ld	r18, Z
+ 232:	2e 7f       	andi	r18, 0xFE	; 254
+ 234:	23 2b       	or	r18, r19
+ 236:	20 83       	st	Z, r18
+ 238:	81 30       	cpi	r24, 0x01	; 1
+ 23a:	91 05       	cpc	r25, r1
+ 23c:	81 f0       	breq	.+32     	; 0x25e <__vector_3+0x1b2>
+ 23e:	1c f4       	brge	.+6      	; 0x246 <__vector_3+0x19a>
+ 240:	89 2b       	or	r24, r25
+ 242:	39 f0       	breq	.+14     	; 0x252 <__vector_3+0x1a6>
+ 244:	1d c0       	rjmp	.+58     	; 0x280 <__vector_3+0x1d4>
+ 246:	82 30       	cpi	r24, 0x02	; 2
+ 248:	91 05       	cpc	r25, r1
+ 24a:	79 f0       	breq	.+30     	; 0x26a <__vector_3+0x1be>
+ 24c:	03 97       	sbiw	r24, 0x03	; 3
+ 24e:	c1 f4       	brne	.+48     	; 0x280 <__vector_3+0x1d4>
+ 250:	12 c0       	rjmp	.+36     	; 0x276 <__vector_3+0x1ca>
+		{
+			case 0: pwm.set_mode_pwm(PWM::CTC);					break;
+ 252:	64 e0       	ldi	r22, 0x04	; 4
+ 254:	8d e7       	ldi	r24, 0x7D	; 125
+ 256:	90 e0       	ldi	r25, 0x00	; 0
+ 258:	0e 94 44 03 	call	0x688	; 0x688 <_ZN3PWM12set_mode_pwmENS_5_MODEE>
+ 25c:	11 c0       	rjmp	.+34     	; 0x280 <__vector_3+0x1d4>
+			case 1: pwm.set_mode_pwm(PWM::FAST_PWM);			break;
+ 25e:	61 e0       	ldi	r22, 0x01	; 1
+ 260:	8d e7       	ldi	r24, 0x7D	; 125
+ 262:	90 e0       	ldi	r25, 0x00	; 0
+ 264:	0e 94 44 03 	call	0x688	; 0x688 <_ZN3PWM12set_mode_pwmENS_5_MODEE>
+ 268:	0b c0       	rjmp	.+22     	; 0x280 <__vector_3+0x1d4>
+			case 2: pwm.set_mode_pwm(PWM::PHASE_CORRECT);		break;
+ 26a:	62 e0       	ldi	r22, 0x02	; 2
+ 26c:	8d e7       	ldi	r24, 0x7D	; 125
+ 26e:	90 e0       	ldi	r25, 0x00	; 0
+ 270:	0e 94 44 03 	call	0x688	; 0x688 <_ZN3PWM12set_mode_pwmENS_5_MODEE>
+ 274:	05 c0       	rjmp	.+10     	; 0x280 <__vector_3+0x1d4>
+			case 3: pwm.set_mode_pwm(PWM::PHASE_FREQ_CORRECT);	break;
+ 276:	63 e0       	ldi	r22, 0x03	; 3
+ 278:	8d e7       	ldi	r24, 0x7D	; 125
+ 27a:	90 e0       	ldi	r25, 0x00	; 0
+ 27c:	0e 94 44 03 	call	0x688	; 0x688 <_ZN3PWM12set_mode_pwmENS_5_MODEE>
+		}
+	}
+	
+	//проверка энкодера
+	if((!(PINA & BIT1) || !(PINA & BIT2)) || (enc.detect == true))
+ 280:	c9 9b       	sbis	0x19, 1	; 25
+ 282:	07 c0       	rjmp	.+14     	; 0x292 <__vector_3+0x1e6>
+ 284:	ca 9b       	sbis	0x19, 2	; 25
+ 286:	05 c0       	rjmp	.+10     	; 0x292 <__vector_3+0x1e6>
+ 288:	80 91 78 00 	lds	r24, 0x0078
+ 28c:	88 23       	and	r24, r24
+ 28e:	09 f4       	brne	.+2      	; 0x292 <__vector_3+0x1e6>
+ 290:	46 c0       	rjmp	.+140    	; 0x31e <__vector_3+0x272>
+	{
+		if(enc.init == false)
+ 292:	80 91 79 00 	lds	r24, 0x0079
+ 296:	81 11       	cpse	r24, r1
+ 298:	31 c0       	rjmp	.+98     	; 0x2fc <__vector_3+0x250>
+		{
+			enc.detect = true;
+ 29a:	81 e0       	ldi	r24, 0x01	; 1
+ 29c:	80 93 78 00 	sts	0x0078, r24
+			uint16_t tmp = OCR1AH<<8 | OCR1AL;
+ 2a0:	3b b5       	in	r19, 0x2b	; 43
+ 2a2:	2a b5       	in	r18, 0x2a	; 42
+ 2a4:	93 2f       	mov	r25, r19
+ 2a6:	80 e0       	ldi	r24, 0x00	; 0
+ 2a8:	82 2b       	or	r24, r18
+			if(PINA & BIT1)
+ 2aa:	c9 9b       	sbis	0x19, 1	; 25
+ 2ac:	13 c0       	rjmp	.+38     	; 0x2d4 <__vector_3+0x228>
+			{
+				if(coeff <= 0xFFFF - tmp)
+ 2ae:	20 91 66 00 	lds	r18, 0x0066
+ 2b2:	30 91 67 00 	lds	r19, 0x0067
+ 2b6:	ac 01       	movw	r20, r24
+ 2b8:	40 95       	com	r20
+ 2ba:	50 95       	com	r21
+ 2bc:	42 17       	cp	r20, r18
+ 2be:	53 07       	cpc	r21, r19
+ 2c0:	28 f0       	brcs	.+10     	; 0x2cc <__vector_3+0x220>
+				{
+					tmp += coeff;
+ 2c2:	82 0f       	add	r24, r18
+ 2c4:	93 1f       	adc	r25, r19
+					OCR1AH = (uint8_t)(tmp>>8);
+ 2c6:	9b bd       	out	0x2b, r25	; 43
+					OCR1AL = (uint8_t)tmp;
+ 2c8:	8a bd       	out	0x2a, r24	; 42
+ 2ca:	12 c0       	rjmp	.+36     	; 0x2f0 <__vector_3+0x244>
+				}
+				else
+				{
+					OCR1AH = 0xFF;
+ 2cc:	8f ef       	ldi	r24, 0xFF	; 255
+ 2ce:	8b bd       	out	0x2b, r24	; 43
+					OCR1AL = 0xFF;
+ 2d0:	8a bd       	out	0x2a, r24	; 42
+ 2d2:	0e c0       	rjmp	.+28     	; 0x2f0 <__vector_3+0x244>
+				}
+			}
+			else
+			{	
+				if(tmp >= coeff)
+ 2d4:	20 91 66 00 	lds	r18, 0x0066
+ 2d8:	30 91 67 00 	lds	r19, 0x0067
+ 2dc:	82 17       	cp	r24, r18
+ 2de:	93 07       	cpc	r25, r19
+ 2e0:	28 f0       	brcs	.+10     	; 0x2ec <__vector_3+0x240>
+				{
+					tmp -= coeff;
+ 2e2:	82 1b       	sub	r24, r18
+ 2e4:	93 0b       	sbc	r25, r19
+					OCR1AH = (uint8_t)(tmp>>8);
+ 2e6:	9b bd       	out	0x2b, r25	; 43
+					OCR1AL = (uint8_t)tmp;
+ 2e8:	8a bd       	out	0x2a, r24	; 42
+ 2ea:	02 c0       	rjmp	.+4      	; 0x2f0 <__vector_3+0x244>
+				}
+				else
+				{
+					OCR1AH = 0x00;
+ 2ec:	1b bc       	out	0x2b, r1	; 43
+					OCR1AL = 0x00;
+ 2ee:	1a bc       	out	0x2a, r1	; 42
+				}
+			}
+								
+			enc.delay = 10;
+ 2f0:	8a e0       	ldi	r24, 0x0A	; 10
+ 2f2:	80 93 7a 00 	sts	0x007A, r24
+			enc.init = true;
+ 2f6:	81 e0       	ldi	r24, 0x01	; 1
+ 2f8:	80 93 79 00 	sts	0x0079, r24
+		}
+		if((PINA & BIT1) && (PINA & BIT2) && !(enc.delay ? --enc.delay : 0))
+ 2fc:	c9 9b       	sbis	0x19, 1	; 25
+ 2fe:	0f c0       	rjmp	.+30     	; 0x31e <__vector_3+0x272>
+ 300:	ca 9b       	sbis	0x19, 2	; 25
+ 302:	0d c0       	rjmp	.+26     	; 0x31e <__vector_3+0x272>
+ 304:	80 91 7a 00 	lds	r24, 0x007A
+ 308:	88 23       	and	r24, r24
+ 30a:	29 f0       	breq	.+10     	; 0x316 <__vector_3+0x26a>
+ 30c:	81 50       	subi	r24, 0x01	; 1
+ 30e:	80 93 7a 00 	sts	0x007A, r24
+ 312:	81 11       	cpse	r24, r1
+ 314:	04 c0       	rjmp	.+8      	; 0x31e <__vector_3+0x272>
+		{
+			enc.detect = false;
+ 316:	10 92 78 00 	sts	0x0078, r1
+			enc.init = false;
+ 31a:	10 92 79 00 	sts	0x0079, r1
+		}
+	}
+	
+
+	// запуск преобразований ADC
+	if(!(ADCSRA & 1<<ADSC))
+ 31e:	86 b1       	in	r24, 0x06	; 6
+	{	
+								
+	}
+	ADCSRA |= 1<<ADSC;					
+ 320:	36 9a       	sbi	0x06, 6	; 6
+}
+ 322:	0f 90       	pop	r0
+ 324:	df 91       	pop	r29
+ 326:	cf 91       	pop	r28
+ 328:	ff 91       	pop	r31
+ 32a:	ef 91       	pop	r30
+ 32c:	bf 91       	pop	r27
+ 32e:	af 91       	pop	r26
+ 330:	9f 91       	pop	r25
+ 332:	8f 91       	pop	r24
+ 334:	7f 91       	pop	r23
+ 336:	6f 91       	pop	r22
+ 338:	5f 91       	pop	r21
+ 33a:	4f 91       	pop	r20
+ 33c:	3f 91       	pop	r19
+ 33e:	2f 91       	pop	r18
+ 340:	0f 90       	pop	r0
+ 342:	0f be       	out	0x3f, r0	; 63
+ 344:	0f 90       	pop	r0
+ 346:	1f 90       	pop	r1
+ 348:	18 95       	reti
+
+0000034a <_Z41__static_initialization_and_destruction_0ii>:
+			but.time = 70;
+			but.detect = false;
+			return true;
+		}
+	return false;
+}
+ 34a:	81 30       	cpi	r24, 0x01	; 1
+ 34c:	91 05       	cpc	r25, r1
+ 34e:	41 f4       	brne	.+16     	; 0x360 <_Z41__static_initialization_and_destruction_0ii+0x16>
+ 350:	6f 3f       	cpi	r22, 0xFF	; 255
+ 352:	7f 4f       	sbci	r23, 0xFF	; 255
+ 354:	71 f4       	brne	.+28     	; 0x372 <_Z41__static_initialization_and_destruction_0ii+0x28>
+#include "Main.h"
+#include "LCD/hd44780.c"
+PWM pwm;
+ 356:	8d e7       	ldi	r24, 0x7D	; 125
+ 358:	90 e0       	ldi	r25, 0x00	; 0
+ 35a:	0e 94 c2 02 	call	0x584	; 0x584 <_ZN3PWMC1Ev>
+ 35e:	08 95       	ret
+ 360:	89 2b       	or	r24, r25
+ 362:	39 f4       	brne	.+14     	; 0x372 <_Z41__static_initialization_and_destruction_0ii+0x28>
+ 364:	6f 3f       	cpi	r22, 0xFF	; 255
+ 366:	7f 4f       	sbci	r23, 0xFF	; 255
+ 368:	21 f4       	brne	.+8      	; 0x372 <_Z41__static_initialization_and_destruction_0ii+0x28>
+ 36a:	8d e7       	ldi	r24, 0x7D	; 125
+ 36c:	90 e0       	ldi	r25, 0x00	; 0
+ 36e:	0e 94 74 03 	call	0x6e8	; 0x6e8 <_ZN3PWMD1Ev>
+ 372:	08 95       	ret
+
+00000374 <_ZL9lcd_writehh>:
+          Delay_us(5);
+          PrevCmdInvolvedAddressCounter=0;
+        }
+    #endif
+
+    if (rs)
+ 374:	66 23       	and	r22, r22
+ 376:	11 f0       	breq	.+4      	; 0x37c <_ZL9lcd_writehh+0x8>
+      {
+        lcd_rs_port_high();                            // RS=1: Write Character
+ 378:	ac 9a       	sbi	0x15, 4	; 21
+ 37a:	01 c0       	rjmp	.+2      	; 0x37e <_ZL9lcd_writehh+0xa>
+        PrevCmdInvolvedAddressCounter=1;
+        #endif
+      }
+    else
+      {
+        lcd_rs_port_low();                          // RS=0: Write Command
+ 37c:	ac 98       	cbi	0x15, 4	; 21
+        PrevCmdInvolvedAddressCounter=0;
+        #endif
+      }
+
+    #if LCD_BITS==4
+      lcd_db7_port_set(data&_BV(7));                  //Output High Nibble
+ 37e:	88 23       	and	r24, r24
+ 380:	14 f4       	brge	.+4      	; 0x386 <_ZL9lcd_writehh+0x12>
+ 382:	ab 9a       	sbi	0x15, 3	; 21
+ 384:	01 c0       	rjmp	.+2      	; 0x388 <_ZL9lcd_writehh+0x14>
+ 386:	ab 98       	cbi	0x15, 3	; 21
+      lcd_db6_port_set(data&_BV(6));
+ 388:	86 ff       	sbrs	r24, 6
+ 38a:	02 c0       	rjmp	.+4      	; 0x390 <_ZL9lcd_writehh+0x1c>
+ 38c:	aa 9a       	sbi	0x15, 2	; 21
+ 38e:	01 c0       	rjmp	.+2      	; 0x392 <_ZL9lcd_writehh+0x1e>
+ 390:	aa 98       	cbi	0x15, 2	; 21
+      lcd_db5_port_set(data&_BV(5));
+ 392:	85 ff       	sbrs	r24, 5
+ 394:	02 c0       	rjmp	.+4      	; 0x39a <_ZL9lcd_writehh+0x26>
+ 396:	a9 9a       	sbi	0x15, 1	; 21
+ 398:	01 c0       	rjmp	.+2      	; 0x39c <_ZL9lcd_writehh+0x28>
+ 39a:	a9 98       	cbi	0x15, 1	; 21
+      lcd_db4_port_set(data&_BV(4));
+ 39c:	84 ff       	sbrs	r24, 4
+ 39e:	02 c0       	rjmp	.+4      	; 0x3a4 <_ZL9lcd_writehh+0x30>
+ 3a0:	a8 9a       	sbi	0x15, 0	; 21
+ 3a2:	01 c0       	rjmp	.+2      	; 0x3a6 <_ZL9lcd_writehh+0x32>
+ 3a4:	a8 98       	cbi	0x15, 0	; 21
+
+      Delay_ns(100);
+ 3a6:	00 c0       	rjmp	.+0      	; 0x3a8 <_ZL9lcd_writehh+0x34>
+      case 4 : LCD_E4_PORT|=_BV(LCD_E4_PIN);
+               break;
+      #endif
+      default :
+  #endif
+                LCD_E_PORT|=_BV(LCD_E_PIN);
+ 3a8:	ae 9a       	sbi	0x15, 6	; 21
+      lcd_db4_port_set(data&_BV(4));
+
+      Delay_ns(100);
+      lcd_e_port_high();
+
+      Delay_ns(500);
+ 3aa:	92 e0       	ldi	r25, 0x02	; 2
+ 3ac:	9a 95       	dec	r25
+ 3ae:	f1 f7       	brne	.-4      	; 0x3ac <_ZL9lcd_writehh+0x38>
+ 3b0:	00 c0       	rjmp	.+0      	; 0x3b2 <_ZL9lcd_writehh+0x3e>
+      case 4 : LCD_E4_PORT&=~_BV(LCD_E4_PIN);
+               break;
+      #endif
+      default :
+  #endif
+                LCD_E_PORT&=~_BV(LCD_E_PIN);
+ 3b2:	ae 98       	cbi	0x15, 6	; 21
+      lcd_e_port_high();
+
+      Delay_ns(500);
+      lcd_e_port_low();
+
+      lcd_db7_port_set(data&_BV(3));                  //Output High Nibble
+ 3b4:	83 ff       	sbrs	r24, 3
+ 3b6:	02 c0       	rjmp	.+4      	; 0x3bc <_ZL9lcd_writehh+0x48>
+ 3b8:	ab 9a       	sbi	0x15, 3	; 21
+ 3ba:	01 c0       	rjmp	.+2      	; 0x3be <_ZL9lcd_writehh+0x4a>
+ 3bc:	ab 98       	cbi	0x15, 3	; 21
+      lcd_db6_port_set(data&_BV(2));
+ 3be:	82 ff       	sbrs	r24, 2
+ 3c0:	02 c0       	rjmp	.+4      	; 0x3c6 <_ZL9lcd_writehh+0x52>
+ 3c2:	aa 9a       	sbi	0x15, 2	; 21
+ 3c4:	01 c0       	rjmp	.+2      	; 0x3c8 <_ZL9lcd_writehh+0x54>
+ 3c6:	aa 98       	cbi	0x15, 2	; 21
+      lcd_db5_port_set(data&_BV(1));
+ 3c8:	81 ff       	sbrs	r24, 1
+ 3ca:	02 c0       	rjmp	.+4      	; 0x3d0 <_ZL9lcd_writehh+0x5c>
+ 3cc:	a9 9a       	sbi	0x15, 1	; 21
+ 3ce:	01 c0       	rjmp	.+2      	; 0x3d2 <_ZL9lcd_writehh+0x5e>
+ 3d0:	a9 98       	cbi	0x15, 1	; 21
+      lcd_db4_port_set(data&_BV(0));
+ 3d2:	80 ff       	sbrs	r24, 0
+ 3d4:	02 c0       	rjmp	.+4      	; 0x3da <_ZL9lcd_writehh+0x66>
+ 3d6:	a8 9a       	sbi	0x15, 0	; 21
+ 3d8:	01 c0       	rjmp	.+2      	; 0x3dc <_ZL9lcd_writehh+0x68>
+ 3da:	a8 98       	cbi	0x15, 0	; 21
+
+      Delay_ns(100);
+ 3dc:	00 c0       	rjmp	.+0      	; 0x3de <_ZL9lcd_writehh+0x6a>
+      case 4 : LCD_E4_PORT|=_BV(LCD_E4_PIN);
+               break;
+      #endif
+      default :
+  #endif
+                LCD_E_PORT|=_BV(LCD_E_PIN);
+ 3de:	ae 9a       	sbi	0x15, 6	; 21
+      lcd_db4_port_set(data&_BV(0));
+
+      Delay_ns(100);
+      lcd_e_port_high();
+
+      Delay_ns(500);
+ 3e0:	92 e0       	ldi	r25, 0x02	; 2
+ 3e2:	9a 95       	dec	r25
+ 3e4:	f1 f7       	brne	.-4      	; 0x3e2 <_ZL9lcd_writehh+0x6e>
+ 3e6:	00 c0       	rjmp	.+0      	; 0x3e8 <_ZL9lcd_writehh+0x74>
+      case 4 : LCD_E4_PORT&=~_BV(LCD_E4_PIN);
+               break;
+      #endif
+      default :
+  #endif
+                LCD_E_PORT&=~_BV(LCD_E_PIN);
+ 3e8:	ae 98       	cbi	0x15, 6	; 21
+      lcd_e_port_high();
+
+      Delay_ns(500);
+      lcd_e_port_low();
+
+      lcd_db7_port_high();                            // All Data Pins High (Inactive)
+ 3ea:	ab 9a       	sbi	0x15, 3	; 21
+      lcd_db6_port_high();
+ 3ec:	aa 9a       	sbi	0x15, 2	; 21
+      lcd_db5_port_high();
+ 3ee:	a9 9a       	sbi	0x15, 1	; 21
+      lcd_db4_port_high();
+ 3f0:	a8 9a       	sbi	0x15, 0	; 21
+      lcd_db1_port_high();
+      lcd_db0_port_high();
+    #endif
+
+    #if (WAIT_MODE==0 || RW_LINE_IMPLEMENTED==0)
+      if (!rs && data<=((1<<LCD_CLR) | (1<<LCD_HOME))) // Is command clrscr or home?
+ 3f2:	61 11       	cpse	r22, r1
+ 3f4:	09 c0       	rjmp	.+18     	; 0x408 <_ZL9lcd_writehh+0x94>
+ 3f6:	84 30       	cpi	r24, 0x04	; 4
+ 3f8:	38 f4       	brcc	.+14     	; 0x408 <_ZL9lcd_writehh+0x94>
+        Delay_us(1640);
+ 3fa:	8f e9       	ldi	r24, 0x9F	; 159
+ 3fc:	99 e1       	ldi	r25, 0x19	; 25
+ 3fe:	01 97       	sbiw	r24, 0x01	; 1
+ 400:	f1 f7       	brne	.-4      	; 0x3fe <_ZL9lcd_writehh+0x8a>
+ 402:	00 c0       	rjmp	.+0      	; 0x404 <_ZL9lcd_writehh+0x90>
+ 404:	00 00       	nop
+ 406:	08 95       	ret
+      else Delay_us(40);
+ 408:	95 ed       	ldi	r25, 0xD5	; 213
+ 40a:	9a 95       	dec	r25
+ 40c:	f1 f7       	brne	.-4      	; 0x40a <_ZL9lcd_writehh+0x96>
+ 40e:	00 00       	nop
+ 410:	08 95       	ret
+
+00000412 <_Z11lcd_commandh>:
+Input:   instruction to send to LCD controller, see HD44780 data sheet
+Returns: none
+*************************************************************************/
+void lcd_command(uint8_t cmd)
+  {
+    lcd_write(cmd,0);
+ 412:	60 e0       	ldi	r22, 0x00	; 0
+ 414:	0e 94 ba 01 	call	0x374	; 0x374 <_ZL9lcd_writehh>
+ 418:	08 95       	ret
+
+0000041a <_Z10lcd_clrscrv>:
+Input:    none
+Returns:  none
+*************************************************************************/
+void lcd_clrscr()
+  {
+    lcd_command(1<<LCD_CLR);
+ 41a:	81 e0       	ldi	r24, 0x01	; 1
+ 41c:	0e 94 09 02 	call	0x412	; 0x412 <_Z11lcd_commandh>
+ 420:	08 95       	ret
+
+00000422 <_Z8lcd_putcc>:
+Input:    character to be displayed
+Returns:  none
+*************************************************************************/
+void lcd_putc(char c)
+  {
+    lcd_write(c,1);
+ 422:	61 e0       	ldi	r22, 0x01	; 1
+ 424:	0e 94 ba 01 	call	0x374	; 0x374 <_ZL9lcd_writehh>
+ 428:	08 95       	ret
+
+0000042a <_Z8lcd_putsPKc>:
+Display string
+Input:    string to be displayed
+Returns:  none
+*************************************************************************/
+void lcd_puts(const char *s)
+  {
+ 42a:	cf 93       	push	r28
+ 42c:	df 93       	push	r29
+    register char c;
+
+    while ((c=*s++)) 
+ 42e:	ec 01       	movw	r28, r24
+ 430:	89 91       	ld	r24, Y+
+ 432:	88 23       	and	r24, r24
+ 434:	29 f0       	breq	.+10     	; 0x440 <_Z8lcd_putsPKc+0x16>
+      lcd_putc(c);
+ 436:	0e 94 11 02 	call	0x422	; 0x422 <_Z8lcd_putcc>
+*************************************************************************/
+void lcd_puts(const char *s)
+  {
+    register char c;
+
+    while ((c=*s++)) 
+ 43a:	89 91       	ld	r24, Y+
+ 43c:	81 11       	cpse	r24, r1
+ 43e:	fb cf       	rjmp	.-10     	; 0x436 <_Z8lcd_putsPKc+0xc>
+      lcd_putc(c);
+  }
+ 440:	df 91       	pop	r29
+ 442:	cf 91       	pop	r28
+ 444:	08 95       	ret
+
+00000446 <_Z8lcd_initv>:
+      case 4 : DDR(LCD_E4_PORT)|=_BV(LCD_E4_PIN);
+               break;
+      #endif
+      default :
+  #endif
+                DDR(LCD_E_PORT)|=_BV(LCD_E_PIN);
+ 446:	a6 9a       	sbi	0x14, 6	; 20
+*************************************************************************/
+void lcd_init()
+  {
+    //Set All Pins as Output
+    lcd_e_ddr_high();
+    lcd_rs_ddr_high();
+ 448:	a4 9a       	sbi	0x14, 4	; 20
+    #if RW_LINE_IMPLEMENTED==1
+      lcd_rw_ddr_high();
+    #endif
+    lcd_db7_ddr_high();
+ 44a:	a3 9a       	sbi	0x14, 3	; 20
+    lcd_db6_ddr_high();
+ 44c:	a2 9a       	sbi	0x14, 2	; 20
+    lcd_db5_ddr_high();
+ 44e:	a1 9a       	sbi	0x14, 1	; 20
+    lcd_db4_ddr_high();
+ 450:	a0 9a       	sbi	0x14, 0	; 20
+      case 4 : LCD_E4_PORT&=~_BV(LCD_E4_PIN);
+               break;
+      #endif
+      default :
+  #endif
+                LCD_E_PORT&=~_BV(LCD_E_PIN);
+ 452:	ae 98       	cbi	0x15, 6	; 21
+      lcd_db0_ddr_high();
+    #endif
+
+    //Set All Control Lines Low
+    lcd_e_port_low();
+    lcd_rs_port_low();
+ 454:	ac 98       	cbi	0x15, 4	; 21
+    #if RW_LINE_IMPLEMENTED==1
+      lcd_rw_port_low();
+    #endif
+
+    //Set All Data Lines High
+    lcd_db7_port_high();
+ 456:	ab 9a       	sbi	0x15, 3	; 21
+    lcd_db6_port_high();
+ 458:	aa 9a       	sbi	0x15, 2	; 21
+    lcd_db5_port_high();
+ 45a:	a9 9a       	sbi	0x15, 1	; 21
+    lcd_db4_port_high();
+ 45c:	a8 9a       	sbi	0x15, 0	; 21
+      lcd_db1_port_high();
+      lcd_db0_port_high();
+    #endif
+
+    //Startup Delay
+    Delay_ms(DELAY_RESET);
+ 45e:	8f e5       	ldi	r24, 0x5F	; 95
+ 460:	9a ee       	ldi	r25, 0xEA	; 234
+ 462:	01 97       	sbiw	r24, 0x01	; 1
+ 464:	f1 f7       	brne	.-4      	; 0x462 <__stack+0x3>
+ 466:	00 c0       	rjmp	.+0      	; 0x468 <__stack+0x9>
+ 468:	00 00       	nop
+
+    //Initialize Display
+    lcd_db7_port_low();
+ 46a:	ab 98       	cbi	0x15, 3	; 21
+    lcd_db6_port_low();
+ 46c:	aa 98       	cbi	0x15, 2	; 21
+    Delay_ns(100);
+ 46e:	00 c0       	rjmp	.+0      	; 0x470 <__stack+0x11>
+      case 4 : LCD_E4_PORT|=_BV(LCD_E4_PIN);
+               break;
+      #endif
+      default :
+  #endif
+                LCD_E_PORT|=_BV(LCD_E_PIN);
+ 470:	ae 9a       	sbi	0x15, 6	; 21
+    //Initialize Display
+    lcd_db7_port_low();
+    lcd_db6_port_low();
+    Delay_ns(100);
+    lcd_e_port_high();
+    Delay_ns(500);
+ 472:	92 e0       	ldi	r25, 0x02	; 2
+ 474:	9a 95       	dec	r25
+ 476:	f1 f7       	brne	.-4      	; 0x474 <__stack+0x15>
+ 478:	00 c0       	rjmp	.+0      	; 0x47a <__stack+0x1b>
+      case 4 : LCD_E4_PORT&=~_BV(LCD_E4_PIN);
+               break;
+      #endif
+      default :
+  #endif
+                LCD_E_PORT&=~_BV(LCD_E_PIN);
+ 47a:	ae 98       	cbi	0x15, 6	; 21
+    Delay_ns(100);
+    lcd_e_port_high();
+    Delay_ns(500);
+    lcd_e_port_low();
+
+    Delay_us(4100);
+ 47c:	8f e0       	ldi	r24, 0x0F	; 15
+ 47e:	90 e4       	ldi	r25, 0x40	; 64
+ 480:	01 97       	sbiw	r24, 0x01	; 1
+ 482:	f1 f7       	brne	.-4      	; 0x480 <__stack+0x21>
+ 484:	00 c0       	rjmp	.+0      	; 0x486 <__stack+0x27>
+ 486:	00 00       	nop
+      case 4 : LCD_E4_PORT|=_BV(LCD_E4_PIN);
+               break;
+      #endif
+      default :
+  #endif
+                LCD_E_PORT|=_BV(LCD_E_PIN);
+ 488:	ae 9a       	sbi	0x15, 6	; 21
+    lcd_e_port_low();
+
+    Delay_us(4100);
+
+    lcd_e_port_high();
+    Delay_ns(500);
+ 48a:	92 e0       	ldi	r25, 0x02	; 2
+ 48c:	9a 95       	dec	r25
+ 48e:	f1 f7       	brne	.-4      	; 0x48c <__stack+0x2d>
+ 490:	00 c0       	rjmp	.+0      	; 0x492 <__stack+0x33>
+      case 4 : LCD_E4_PORT&=~_BV(LCD_E4_PIN);
+               break;
+      #endif
+      default :
+  #endif
+                LCD_E_PORT&=~_BV(LCD_E_PIN);
+ 492:	ae 98       	cbi	0x15, 6	; 21
+
+    lcd_e_port_high();
+    Delay_ns(500);
+    lcd_e_port_low();
+
+    Delay_us(100);
+ 494:	8f e8       	ldi	r24, 0x8F	; 143
+ 496:	91 e0       	ldi	r25, 0x01	; 1
+ 498:	01 97       	sbiw	r24, 0x01	; 1
+ 49a:	f1 f7       	brne	.-4      	; 0x498 <__stack+0x39>
+ 49c:	00 c0       	rjmp	.+0      	; 0x49e <__stack+0x3f>
+ 49e:	00 00       	nop
+      case 4 : LCD_E4_PORT|=_BV(LCD_E4_PIN);
+               break;
+      #endif
+      default :
+  #endif
+                LCD_E_PORT|=_BV(LCD_E_PIN);
+ 4a0:	ae 9a       	sbi	0x15, 6	; 21
+    lcd_e_port_low();
+
+    Delay_us(100);
+
+    lcd_e_port_high();
+    Delay_ns(500);
+ 4a2:	92 e0       	ldi	r25, 0x02	; 2
+ 4a4:	9a 95       	dec	r25
+ 4a6:	f1 f7       	brne	.-4      	; 0x4a4 <__stack+0x45>
+ 4a8:	00 c0       	rjmp	.+0      	; 0x4aa <__stack+0x4b>
+      case 4 : LCD_E4_PORT&=~_BV(LCD_E4_PIN);
+               break;
+      #endif
+      default :
+  #endif
+                LCD_E_PORT&=~_BV(LCD_E_PIN);
+ 4aa:	ae 98       	cbi	0x15, 6	; 21
+
+    lcd_e_port_high();
+    Delay_ns(500);
+    lcd_e_port_low();
+
+    Delay_us(40);
+ 4ac:	85 ed       	ldi	r24, 0xD5	; 213
+ 4ae:	8a 95       	dec	r24
+ 4b0:	f1 f7       	brne	.-4      	; 0x4ae <__stack+0x4f>
+ 4b2:	00 00       	nop
+
+    //Init differs between 4-bit and 8-bit from here
+    #if (LCD_BITS==4)
+      lcd_db4_port_low();
+ 4b4:	a8 98       	cbi	0x15, 0	; 21
+      Delay_ns(100);
+ 4b6:	00 c0       	rjmp	.+0      	; 0x4b8 <__stack+0x59>
+      case 4 : LCD_E4_PORT|=_BV(LCD_E4_PIN);
+               break;
+      #endif
+      default :
+  #endif
+                LCD_E_PORT|=_BV(LCD_E_PIN);
+ 4b8:	ae 9a       	sbi	0x15, 6	; 21
+    //Init differs between 4-bit and 8-bit from here
+    #if (LCD_BITS==4)
+      lcd_db4_port_low();
+      Delay_ns(100);
+      lcd_e_port_high();
+      Delay_ns(500);
+ 4ba:	92 e0       	ldi	r25, 0x02	; 2
+ 4bc:	9a 95       	dec	r25
+ 4be:	f1 f7       	brne	.-4      	; 0x4bc <__stack+0x5d>
+ 4c0:	00 c0       	rjmp	.+0      	; 0x4c2 <__stack+0x63>
+      case 4 : LCD_E4_PORT&=~_BV(LCD_E4_PIN);
+               break;
+      #endif
+      default :
+  #endif
+                LCD_E_PORT&=~_BV(LCD_E_PIN);
+ 4c2:	ae 98       	cbi	0x15, 6	; 21
+      lcd_db4_port_low();
+      Delay_ns(100);
+      lcd_e_port_high();
+      Delay_ns(500);
+      lcd_e_port_low();
+      Delay_us(40);
+ 4c4:	85 ed       	ldi	r24, 0xD5	; 213
+ 4c6:	8a 95       	dec	r24
+ 4c8:	f1 f7       	brne	.-4      	; 0x4c6 <__stack+0x67>
+ 4ca:	00 00       	nop
+
+      lcd_db4_port_low();
+ 4cc:	a8 98       	cbi	0x15, 0	; 21
+      Delay_ns(100);
+ 4ce:	00 c0       	rjmp	.+0      	; 0x4d0 <__stack+0x71>
+      case 4 : LCD_E4_PORT|=_BV(LCD_E4_PIN);
+               break;
+      #endif
+      default :
+  #endif
+                LCD_E_PORT|=_BV(LCD_E_PIN);
+ 4d0:	ae 9a       	sbi	0x15, 6	; 21
+      Delay_us(40);
+
+      lcd_db4_port_low();
+      Delay_ns(100);
+      lcd_e_port_high();
+      Delay_ns(500);
+ 4d2:	92 e0       	ldi	r25, 0x02	; 2
+ 4d4:	9a 95       	dec	r25
+ 4d6:	f1 f7       	brne	.-4      	; 0x4d4 <__stack+0x75>
+ 4d8:	00 c0       	rjmp	.+0      	; 0x4da <__stack+0x7b>
+      case 4 : LCD_E4_PORT&=~_BV(LCD_E4_PIN);
+               break;
+      #endif
+      default :
+  #endif
+                LCD_E_PORT&=~_BV(LCD_E_PIN);
+ 4da:	ae 98       	cbi	0x15, 6	; 21
+      lcd_db4_port_low();
+      Delay_ns(100);
+      lcd_e_port_high();
+      Delay_ns(500);
+      lcd_e_port_low();
+      Delay_ns(500);
+ 4dc:	82 e0       	ldi	r24, 0x02	; 2
+ 4de:	8a 95       	dec	r24
+ 4e0:	f1 f7       	brne	.-4      	; 0x4de <__stack+0x7f>
+ 4e2:	00 c0       	rjmp	.+0      	; 0x4e4 <__stack+0x85>
+
+      #if (LCD_DISPLAYS==1)
+        if (LCD_DISPLAY_LINES>1)
+          lcd_db7_port_high();
+ 4e4:	ab 9a       	sbi	0x15, 3	; 21
+          }
+        if (c>1)
+          lcd_db7_port_high();
+      #endif
+
+      Delay_ns(100);
+ 4e6:	00 c0       	rjmp	.+0      	; 0x4e8 <__stack+0x89>
+      case 4 : LCD_E4_PORT|=_BV(LCD_E4_PIN);
+               break;
+      #endif
+      default :
+  #endif
+                LCD_E_PORT|=_BV(LCD_E_PIN);
+ 4e8:	ae 9a       	sbi	0x15, 6	; 21
+          lcd_db7_port_high();
+      #endif
+
+      Delay_ns(100);
+      lcd_e_port_high();
+      Delay_ns(500);
+ 4ea:	92 e0       	ldi	r25, 0x02	; 2
+ 4ec:	9a 95       	dec	r25
+ 4ee:	f1 f7       	brne	.-4      	; 0x4ec <__stack+0x8d>
+ 4f0:	00 c0       	rjmp	.+0      	; 0x4f2 <__stack+0x93>
+      case 4 : LCD_E4_PORT&=~_BV(LCD_E4_PIN);
+               break;
+      #endif
+      default :
+  #endif
+                LCD_E_PORT&=~_BV(LCD_E_PIN);
+ 4f2:	ae 98       	cbi	0x15, 6	; 21
+
+      Delay_ns(100);
+      lcd_e_port_high();
+      Delay_ns(500);
+      lcd_e_port_low();
+      Delay_us(40);
+ 4f4:	85 ed       	ldi	r24, 0xD5	; 213
+ 4f6:	8a 95       	dec	r24
+ 4f8:	f1 f7       	brne	.-4      	; 0x4f6 <__stack+0x97>
+ 4fa:	00 00       	nop
+      lcd_e_port_low();
+      Delay_us(40);
+    #endif
+
+    //Display Off
+    lcd_command(_BV(LCD_DISPLAYMODE));
+ 4fc:	88 e0       	ldi	r24, 0x08	; 8
+ 4fe:	0e 94 09 02 	call	0x412	; 0x412 <_Z11lcd_commandh>
+
+    //Display Clear
+    lcd_clrscr();
+ 502:	0e 94 0d 02 	call	0x41a	; 0x41a <_Z10lcd_clrscrv>
+
+    //Entry Mode Set
+    lcd_command(_BV(LCD_ENTRY_MODE) | _BV(LCD_ENTRY_INC));
+ 506:	86 e0       	ldi	r24, 0x06	; 6
+ 508:	0e 94 09 02 	call	0x412	; 0x412 <_Z11lcd_commandh>
+
+    //Display On
+    lcd_command(_BV(LCD_DISPLAYMODE) | _BV(LCD_DISPLAYMODE_ON));
+ 50c:	8c e0       	ldi	r24, 0x0C	; 12
+ 50e:	0e 94 09 02 	call	0x412	; 0x412 <_Z11lcd_commandh>
+ 512:	08 95       	ret
+
+00000514 <main>:
+
+int main( void )
+{
+	//peiph_init();
+
+	lcd_init();
+ 514:	0e 94 23 02 	call	0x446	; 0x446 <_Z8lcd_initv>
+	lcd_clrscr();
+ 518:	0e 94 0d 02 	call	0x41a	; 0x41a <_Z10lcd_clrscrv>
+	lcd_puts("Hello World...");
+ 51c:	88 e6       	ldi	r24, 0x68	; 104
+ 51e:	90 e0       	ldi	r25, 0x00	; 0
+ 520:	0e 94 15 02 	call	0x42a	; 0x42a <_Z8lcd_putsPKc>
+	
+	sei();
+ 524:	78 94       	sei
+ 526:	ff cf       	rjmp	.-2      	; 0x526 <main+0x12>
+
+00000528 <_Z11push_buttonhhR6Button>:
+	}
+}
+
+bool push_button (const uint8_t PINX, const uint8_t pin_number, Button &but)
+{
+	if (!(PINX & 1<<pin_number))
+ 528:	90 e0       	ldi	r25, 0x00	; 0
+ 52a:	9c 01       	movw	r18, r24
+ 52c:	02 c0       	rjmp	.+4      	; 0x532 <_Z11push_buttonhhR6Button+0xa>
+ 52e:	35 95       	asr	r19
+ 530:	27 95       	ror	r18
+ 532:	6a 95       	dec	r22
+ 534:	e2 f7       	brpl	.-8      	; 0x52e <_Z11push_buttonhhR6Button+0x6>
+ 536:	20 fd       	sbrc	r18, 0
+ 538:	05 c0       	rjmp	.+10     	; 0x544 <_Z11push_buttonhhR6Button+0x1c>
+		but.detect = true;
+ 53a:	81 e0       	ldi	r24, 0x01	; 1
+ 53c:	fa 01       	movw	r30, r20
+ 53e:	80 83       	st	Z, r24
+		{
+			but.time = 70;
+			but.detect = false;
+			return true;
+		}
+	return false;
+ 540:	80 e0       	ldi	r24, 0x00	; 0
+ 542:	08 95       	ret
+bool push_button (const uint8_t PINX, const uint8_t pin_number, Button &but)
+{
+	if (!(PINX & 1<<pin_number))
+		but.detect = true;
+	else
+		if ((but.detect == true) && !(but.time ? but.time-- : 0))
+ 544:	fa 01       	movw	r30, r20
+ 546:	80 81       	ld	r24, Z
+ 548:	88 23       	and	r24, r24
+ 54a:	61 f0       	breq	.+24     	; 0x564 <_Z11push_buttonhhR6Button+0x3c>
+ 54c:	81 81       	ldd	r24, Z+1	; 0x01
+ 54e:	88 23       	and	r24, r24
+ 550:	19 f0       	breq	.+6      	; 0x558 <_Z11push_buttonhhR6Button+0x30>
+ 552:	81 50       	subi	r24, 0x01	; 1
+ 554:	81 83       	std	Z+1, r24	; 0x01
+ 556:	06 c0       	rjmp	.+12     	; 0x564 <_Z11push_buttonhhR6Button+0x3c>
+		{
+			but.time = 70;
+ 558:	86 e4       	ldi	r24, 0x46	; 70
+ 55a:	fa 01       	movw	r30, r20
+ 55c:	81 83       	std	Z+1, r24	; 0x01
+			but.detect = false;
+ 55e:	10 82       	st	Z, r1
+			return true;
+ 560:	81 e0       	ldi	r24, 0x01	; 1
+ 562:	08 95       	ret
+		}
+	return false;
+ 564:	80 e0       	ldi	r24, 0x00	; 0
+}
+ 566:	08 95       	ret
+
+00000568 <_GLOBAL__sub_I__Z11lcd_commandh>:
+ 568:	6f ef       	ldi	r22, 0xFF	; 255
+ 56a:	7f ef       	ldi	r23, 0xFF	; 255
+ 56c:	81 e0       	ldi	r24, 0x01	; 1
+ 56e:	90 e0       	ldi	r25, 0x00	; 0
+ 570:	0e 94 a5 01 	call	0x34a	; 0x34a <_Z41__static_initialization_and_destruction_0ii>
+ 574:	08 95       	ret
+
+00000576 <_GLOBAL__sub_D__Z11lcd_commandh>:
+ 576:	6f ef       	ldi	r22, 0xFF	; 255
+ 578:	7f ef       	ldi	r23, 0xFF	; 255
+ 57a:	80 e0       	ldi	r24, 0x00	; 0
+ 57c:	90 e0       	ldi	r25, 0x00	; 0
+ 57e:	0e 94 a5 01 	call	0x34a	; 0x34a <_Z41__static_initialization_and_destruction_0ii>
+ 582:	08 95       	ret
+
+00000584 <_ZN3PWMC1Ev>:
+#include "PWM.h"
+
+PWM::PWM()
+ 584:	fc 01       	movw	r30, r24
+{
+	mode = INITIAL;
+ 586:	80 81       	ld	r24, Z
+ 588:	88 7f       	andi	r24, 0xF8	; 248
+ 58a:	80 83       	st	Z, r24
+	
+	FastPWM_settings._TCCR1A = 0<<WGM11 | 1<< WGM10 | 1<<COM1A1 | 0<<COM1A0;
+ 58c:	81 e8       	ldi	r24, 0x81	; 129
+ 58e:	86 83       	std	Z+6, r24	; 0x06
+	FastPWM_settings._TCCR1B = 0<<WGM13 | 1<< WGM12 | 0<<CS12	| 0<<CS11	| 1<<CS10;
+ 590:	99 e0       	ldi	r25, 0x09	; 9
+ 592:	97 83       	std	Z+7, r25	; 0x07
+	FastPWM_settings._OCR1AH = 0;
+ 594:	10 86       	std	Z+8, r1	; 0x08
+	FastPWM_settings._OCR1AL = 0;
+ 596:	11 86       	std	Z+9, r1	; 0x09
+	
+	CTC_settings._TCCR1A = 0<<WGM11 | 0<< WGM10 | 0<<COM1A1 | 1<<COM1A0;
+ 598:	20 e4       	ldi	r18, 0x40	; 64
+ 59a:	21 83       	std	Z+1, r18	; 0x01
+	CTC_settings._TCCR1B = 0<<WGM13 | 1<< WGM12 | 0<<CS12	| 0<<CS11	| 1<<CS10;
+ 59c:	92 83       	std	Z+2, r25	; 0x02
+	CTC_settings._OCR1AH = 0;
+ 59e:	13 82       	std	Z+3, r1	; 0x03
+	CTC_settings._OCR1AL = 0;
+ 5a0:	14 82       	std	Z+4, r1	; 0x04
+	
+	PhaseCorrect_settings._TCCR1A = 0<<WGM11 | 1<< WGM10 | 1<<COM1A1 | 0<<COM1A0;
+ 5a2:	83 87       	std	Z+11, r24	; 0x0b
+	PhaseCorrect_settings._TCCR1B = 0<<WGM13 | 0<< WGM12 | 0<<CS12	 | 0<<CS11	| 1<<CS10;
+ 5a4:	91 e0       	ldi	r25, 0x01	; 1
+ 5a6:	94 87       	std	Z+12, r25	; 0x0c
+	PhaseCorrect_settings._OCR1AH = 0;
+ 5a8:	15 86       	std	Z+13, r1	; 0x0d
+	PhaseCorrect_settings._OCR1AL = 0;
+ 5aa:	16 86       	std	Z+14, r1	; 0x0e
+
+	PhaseCorrectFreq_settings._TCCR1A = 0<<WGM11 | 1<< WGM10 | 1<<COM1A1 | 0<<COM1A0;
+ 5ac:	80 8b       	std	Z+16, r24	; 0x10
+	PhaseCorrectFreq_settings._TCCR1B = 1<<WGM13 | 0<< WGM12 | 0<<CS12	 | 0<<CS11	| 1<<CS10;
+ 5ae:	81 e1       	ldi	r24, 0x11	; 17
+ 5b0:	81 8b       	std	Z+17, r24	; 0x11
+	PhaseCorrectFreq_settings._OCR1AH = 0;
+ 5b2:	12 8a       	std	Z+18, r1	; 0x12
+	PhaseCorrectFreq_settings._OCR1AL = 0;
+ 5b4:	13 8a       	std	Z+19, r1	; 0x13
+
+
+	TCCR1A = 0;
+ 5b6:	1f bc       	out	0x2f, r1	; 47
+	TCCR1B = 0;
+ 5b8:	1e bc       	out	0x2e, r1	; 46
+	TCNT1H = 0;	TCNT1L = 0;									// обнуление счётного регистра
+ 5ba:	1d bc       	out	0x2d, r1	; 45
+ 5bc:	1c bc       	out	0x2c, r1	; 44
+	OCR1AH = 0;	OCR1AL = 0;									// обнуление регистра сравнения выходного сигнала
+ 5be:	1b bc       	out	0x2b, r1	; 43
+ 5c0:	1a bc       	out	0x2a, r1	; 42
+	
+	DDRD	|=	OC1A_bit;									// OC1A ON
+ 5c2:	8d 9a       	sbi	0x11, 5	; 17
+ 5c4:	08 95       	ret
+
+000005c6 <_ZN3PWM13set_prescalerERKh>:
+}
+
+// выбор деления входной частоты 
+void PWM::set_prescaler(const uint8_t &state)
+{
+	TCCR1B &=~ ((1<<CS12) | (1<<CS11) | (1<<CS10));
+ 5c6:	8e b5       	in	r24, 0x2e	; 46
+ 5c8:	88 7f       	andi	r24, 0xF8	; 248
+ 5ca:	8e bd       	out	0x2e, r24	; 46
+	switch(state)
+ 5cc:	fb 01       	movw	r30, r22
+ 5ce:	80 81       	ld	r24, Z
+ 5d0:	82 30       	cpi	r24, 0x02	; 2
+ 5d2:	99 f0       	breq	.+38     	; 0x5fa <_ZN3PWM13set_prescalerERKh+0x34>
+ 5d4:	28 f4       	brcc	.+10     	; 0x5e0 <_ZN3PWM13set_prescalerERKh+0x1a>
+ 5d6:	88 23       	and	r24, r24
+ 5d8:	41 f0       	breq	.+16     	; 0x5ea <_ZN3PWM13set_prescalerERKh+0x24>
+ 5da:	81 30       	cpi	r24, 0x01	; 1
+ 5dc:	c9 f4       	brne	.+50     	; 0x610 <_ZN3PWM13set_prescalerERKh+0x4a>
+ 5de:	09 c0       	rjmp	.+18     	; 0x5f2 <_ZN3PWM13set_prescalerERKh+0x2c>
+ 5e0:	83 30       	cpi	r24, 0x03	; 3
+ 5e2:	79 f0       	breq	.+30     	; 0x602 <_ZN3PWM13set_prescalerERKh+0x3c>
+ 5e4:	84 30       	cpi	r24, 0x04	; 4
+ 5e6:	a1 f4       	brne	.+40     	; 0x610 <_ZN3PWM13set_prescalerERKh+0x4a>
+ 5e8:	10 c0       	rjmp	.+32     	; 0x60a <_ZN3PWM13set_prescalerERKh+0x44>
+	{
+		case 0: TCCR1B |= (0<<CS12) | (0<<CS11) | (1<<CS10);  break;
+ 5ea:	8e b5       	in	r24, 0x2e	; 46
+ 5ec:	81 60       	ori	r24, 0x01	; 1
+ 5ee:	8e bd       	out	0x2e, r24	; 46
+ 5f0:	08 95       	ret
+		case 1: TCCR1B |= (0<<CS12) | (1<<CS11) | (0<<CS10);  break;
+ 5f2:	8e b5       	in	r24, 0x2e	; 46
+ 5f4:	82 60       	ori	r24, 0x02	; 2
+ 5f6:	8e bd       	out	0x2e, r24	; 46
+ 5f8:	08 95       	ret
+		case 2: TCCR1B |= (0<<CS12) | (1<<CS11) | (1<<CS10);  break;
+ 5fa:	8e b5       	in	r24, 0x2e	; 46
+ 5fc:	83 60       	ori	r24, 0x03	; 3
+ 5fe:	8e bd       	out	0x2e, r24	; 46
+ 600:	08 95       	ret
+		case 3: TCCR1B |= (1<<CS12) | (0<<CS11) | (0<<CS10);  break;
+ 602:	8e b5       	in	r24, 0x2e	; 46
+ 604:	84 60       	ori	r24, 0x04	; 4
+ 606:	8e bd       	out	0x2e, r24	; 46
+ 608:	08 95       	ret
+		case 4:	TCCR1B |= (1<<CS12) | (0<<CS11) | (1<<CS10);  break;
+ 60a:	8e b5       	in	r24, 0x2e	; 46
+ 60c:	85 60       	ori	r24, 0x05	; 5
+ 60e:	8e bd       	out	0x2e, r24	; 46
+ 610:	08 95       	ret
+
+00000612 <_ZN3PWM11select_modeERKh>:
+}
+
+settings* PWM::select_mode(const uint8_t &mode)
+{
+	settings* tmp;
+	switch(mode)
+ 612:	fb 01       	movw	r30, r22
+ 614:	20 81       	ld	r18, Z
+ 616:	22 30       	cpi	r18, 0x02	; 2
+ 618:	89 f0       	breq	.+34     	; 0x63c <_ZN3PWM11select_modeERKh+0x2a>
+ 61a:	18 f4       	brcc	.+6      	; 0x622 <_ZN3PWM11select_modeERKh+0x10>
+ 61c:	21 30       	cpi	r18, 0x01	; 1
+ 61e:	b1 f4       	brne	.+44     	; 0x64c <_ZN3PWM11select_modeERKh+0x3a>
+ 620:	05 c0       	rjmp	.+10     	; 0x62c <_ZN3PWM11select_modeERKh+0x1a>
+ 622:	23 30       	cpi	r18, 0x03	; 3
+ 624:	79 f0       	breq	.+30     	; 0x644 <_ZN3PWM11select_modeERKh+0x32>
+ 626:	24 30       	cpi	r18, 0x04	; 4
+ 628:	89 f4       	brne	.+34     	; 0x64c <_ZN3PWM11select_modeERKh+0x3a>
+ 62a:	04 c0       	rjmp	.+8      	; 0x634 <_ZN3PWM11select_modeERKh+0x22>
+	{
+		case FAST_PWM:				tmp = &FastPWM_settings;			break;
+ 62c:	9c 01       	movw	r18, r24
+ 62e:	2a 5f       	subi	r18, 0xFA	; 250
+ 630:	3f 4f       	sbci	r19, 0xFF	; 255
+ 632:	0e c0       	rjmp	.+28     	; 0x650 <_ZN3PWM11select_modeERKh+0x3e>
+		case CTC:					tmp = &CTC_settings;				break;
+ 634:	9c 01       	movw	r18, r24
+ 636:	2f 5f       	subi	r18, 0xFF	; 255
+ 638:	3f 4f       	sbci	r19, 0xFF	; 255
+ 63a:	0a c0       	rjmp	.+20     	; 0x650 <_ZN3PWM11select_modeERKh+0x3e>
+		case PHASE_CORRECT:			tmp = &PhaseCorrect_settings;		break;
+ 63c:	9c 01       	movw	r18, r24
+ 63e:	25 5f       	subi	r18, 0xF5	; 245
+ 640:	3f 4f       	sbci	r19, 0xFF	; 255
+ 642:	06 c0       	rjmp	.+12     	; 0x650 <_ZN3PWM11select_modeERKh+0x3e>
+		case PHASE_FREQ_CORRECT:	tmp = &PhaseCorrectFreq_settings;	break;
+ 644:	9c 01       	movw	r18, r24
+ 646:	20 5f       	subi	r18, 0xF0	; 240
+ 648:	3f 4f       	sbci	r19, 0xFF	; 255
+ 64a:	02 c0       	rjmp	.+4      	; 0x650 <_ZN3PWM11select_modeERKh+0x3e>
+		default: return 0;
+ 64c:	20 e0       	ldi	r18, 0x00	; 0
+ 64e:	30 e0       	ldi	r19, 0x00	; 0
+	}
+	return tmp;
+}
+ 650:	82 2f       	mov	r24, r18
+ 652:	93 2f       	mov	r25, r19
+ 654:	08 95       	ret
+
+00000656 <_ZN3PWM13save_settingsEv>:
+		case 4:	TCCR1B |= (1<<CS12) | (0<<CS11) | (1<<CS10);  break;
+	}
+}
+
+void PWM::save_settings()
+{
+ 656:	cf 93       	push	r28
+ 658:	df 93       	push	r29
+ 65a:	1f 92       	push	r1
+ 65c:	cd b7       	in	r28, 0x3d	; 61
+ 65e:	de b7       	in	r29, 0x3e	; 62
+	settings *tmp;
+	tmp = select_mode(mode);	
+ 660:	fc 01       	movw	r30, r24
+ 662:	20 81       	ld	r18, Z
+ 664:	27 70       	andi	r18, 0x07	; 7
+ 666:	29 83       	std	Y+1, r18	; 0x01
+ 668:	be 01       	movw	r22, r28
+ 66a:	6f 5f       	subi	r22, 0xFF	; 255
+ 66c:	7f 4f       	sbci	r23, 0xFF	; 255
+ 66e:	0e 94 09 03 	call	0x612	; 0x612 <_ZN3PWM11select_modeERKh>
+ 672:	fc 01       	movw	r30, r24
+	tmp->_OCR1AH = OCR1AH;
+ 674:	8b b5       	in	r24, 0x2b	; 43
+ 676:	82 83       	std	Z+2, r24	; 0x02
+	tmp->_OCR1AL = OCR1AL;
+ 678:	8a b5       	in	r24, 0x2a	; 42
+ 67a:	83 83       	std	Z+3, r24	; 0x03
+	tmp->save	 = true;
+ 67c:	81 e0       	ldi	r24, 0x01	; 1
+ 67e:	84 83       	std	Z+4, r24	; 0x04
+}
+ 680:	0f 90       	pop	r0
+ 682:	df 91       	pop	r29
+ 684:	cf 91       	pop	r28
+ 686:	08 95       	ret
+
+00000688 <_ZN3PWM12set_mode_pwmENS_5_MODEE>:
+
+void PWM::set_mode_pwm(_MODE _M)
+{
+ 688:	ff 92       	push	r15
+ 68a:	0f 93       	push	r16
+ 68c:	1f 93       	push	r17
+ 68e:	cf 93       	push	r28
+ 690:	df 93       	push	r29
+ 692:	1f 92       	push	r1
+ 694:	cd b7       	in	r28, 0x3d	; 61
+ 696:	de b7       	in	r29, 0x3e	; 62
+ 698:	8c 01       	movw	r16, r24
+ 69a:	f6 2e       	mov	r15, r22
+	save_settings();
+ 69c:	0e 94 2b 03 	call	0x656	; 0x656 <_ZN3PWM13save_settingsEv>
+	mode = _M;
+ 6a0:	6f 2d       	mov	r22, r15
+ 6a2:	67 70       	andi	r22, 0x07	; 7
+ 6a4:	f8 01       	movw	r30, r16
+ 6a6:	80 81       	ld	r24, Z
+ 6a8:	88 7f       	andi	r24, 0xF8	; 248
+ 6aa:	86 2b       	or	r24, r22
+ 6ac:	80 83       	st	Z, r24
+	settings *mode_setting;
+	mode_setting = select_mode(mode);
+ 6ae:	69 83       	std	Y+1, r22	; 0x01
+ 6b0:	be 01       	movw	r22, r28
+ 6b2:	6f 5f       	subi	r22, 0xFF	; 255
+ 6b4:	7f 4f       	sbci	r23, 0xFF	; 255
+ 6b6:	c8 01       	movw	r24, r16
+ 6b8:	0e 94 09 03 	call	0x612	; 0x612 <_ZN3PWM11select_modeERKh>
+ 6bc:	fc 01       	movw	r30, r24
+
+	TCCR1A = mode_setting->_TCCR1A;
+ 6be:	80 81       	ld	r24, Z
+ 6c0:	8f bd       	out	0x2f, r24	; 47
+	TCCR1B = mode_setting->_TCCR1B;
+ 6c2:	81 81       	ldd	r24, Z+1	; 0x01
+ 6c4:	8e bd       	out	0x2e, r24	; 46
+	
+	if (mode_setting->save)
+ 6c6:	84 81       	ldd	r24, Z+4	; 0x04
+ 6c8:	88 23       	and	r24, r24
+ 6ca:	29 f0       	breq	.+10     	; 0x6d6 <_ZN3PWM12set_mode_pwmENS_5_MODEE+0x4e>
+	{
+		OCR1AH = mode_setting->_OCR1AH;
+ 6cc:	82 81       	ldd	r24, Z+2	; 0x02
+ 6ce:	8b bd       	out	0x2b, r24	; 43
+		OCR1AL = mode_setting->_OCR1AL;
+ 6d0:	83 81       	ldd	r24, Z+3	; 0x03
+ 6d2:	8a bd       	out	0x2a, r24	; 42
+ 6d4:	02 c0       	rjmp	.+4      	; 0x6da <_ZN3PWM12set_mode_pwmENS_5_MODEE+0x52>
+	}
+	else
+	{
+		OCR1AH = 0;
+ 6d6:	1b bc       	out	0x2b, r1	; 43
+		OCR1AL = 0;
+ 6d8:	1a bc       	out	0x2a, r1	; 42
+	}
+}
+ 6da:	0f 90       	pop	r0
+ 6dc:	df 91       	pop	r29
+ 6de:	cf 91       	pop	r28
+ 6e0:	1f 91       	pop	r17
+ 6e2:	0f 91       	pop	r16
+ 6e4:	ff 90       	pop	r15
+ 6e6:	08 95       	ret
+
+000006e8 <_ZN3PWMD1Ev>:
+}
+
+
+PWM::~PWM()
+{
+	TIMSK	&=~ (1<<OCIE1A);
+ 6e8:	89 b7       	in	r24, 0x39	; 57
+ 6ea:	8f 7e       	andi	r24, 0xEF	; 239
+ 6ec:	89 bf       	out	0x39, r24	; 57
+	TCCR1A	= 0;
+ 6ee:	1f bc       	out	0x2f, r1	; 47
+	TCCR1B	= 0;
+ 6f0:	1e bc       	out	0x2e, r1	; 46
+	DDRD	&=~ OC1A_bit;
+ 6f2:	8d 98       	cbi	0x11, 5	; 17
+	TCNT1H	= 0;	TCNT1L = 0;									// обнуление счётного регистра
+ 6f4:	1d bc       	out	0x2d, r1	; 45
+ 6f6:	1c bc       	out	0x2c, r1	; 44
+	OCR1AH	= 0;	OCR1AL = 0;									// обнуление регистра сравнения выходного сигнала
+ 6f8:	1b bc       	out	0x2b, r1	; 43
+ 6fa:	1a bc       	out	0x2a, r1	; 42
+ 6fc:	08 95       	ret
+
+000006fe <__tablejump2__>:
+ 6fe:	ee 0f       	add	r30, r30
+ 700:	ff 1f       	adc	r31, r31
+
+00000702 <__tablejump__>:
+ 702:	05 90       	lpm	r0, Z+
+ 704:	f4 91       	lpm	r31, Z
+ 706:	e0 2d       	mov	r30, r0
+ 708:	09 94       	ijmp
+
+0000070a <__do_global_dtors>:
+ 70a:	10 e0       	ldi	r17, 0x00	; 0
+ 70c:	c6 e5       	ldi	r28, 0x56	; 86
+ 70e:	d0 e0       	ldi	r29, 0x00	; 0
+ 710:	04 c0       	rjmp	.+8      	; 0x71a <__do_global_dtors+0x10>
+ 712:	fe 01       	movw	r30, r28
+ 714:	0e 94 81 03 	call	0x702	; 0x702 <__tablejump__>
+ 718:	22 96       	adiw	r28, 0x02	; 2
+ 71a:	c8 35       	cpi	r28, 0x58	; 88
+ 71c:	d1 07       	cpc	r29, r17
+ 71e:	c9 f7       	brne	.-14     	; 0x712 <__do_global_dtors+0x8>
+ 720:	f8 94       	cli
+
+00000722 <__stop_program>:
+ 722:	ff cf       	rjmp	.-2      	; 0x722 <__stop_program>
