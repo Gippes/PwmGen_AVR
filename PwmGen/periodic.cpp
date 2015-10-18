@@ -63,6 +63,7 @@ ISR(TIMER2_COMP_vect)
 					tmp += coeff;
 					OCR1AH = (uint8_t)(tmp>>8);
 					OCR1AL = (uint8_t)tmp;
+					lcd_puts_P((uint8_t&)(tmp = &(F_CPU / (*tmp))));
 				}
 				else
 				{
