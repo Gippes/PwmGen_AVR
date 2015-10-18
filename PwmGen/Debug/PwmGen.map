@@ -38,10 +38,6 @@ Discarded input sections
                 0x00000000       0x1c hd44780.o
  .text.lcd_home
                 0x00000000       0x14 hd44780.o
- .text.lcd_putc
-                0x00000000       0x1c hd44780.o
- .text.lcd_puts
-                0x00000000       0x3a hd44780.o
  .text.lcd_puts_P
                 0x00000000       0x52 hd44780.o
  .text          0x00000000        0x0 periodic.o
@@ -53,6 +49,17 @@ Discarded input sections
  .text          0x00000000        0x0 periph_init.o
  .data          0x00000000        0x0 periph_init.o
  .bss           0x00000000        0x0 periph_init.o
+ .text._Z10peiph_initv
+                0x00000000       0x2c periph_init.o
+ .debug_info    0x00000000       0x82 periph_init.o
+ .debug_abbrev  0x00000000       0x45 periph_init.o
+ .debug_aranges
+                0x00000000       0x20 periph_init.o
+ .debug_ranges  0x00000000       0x10 periph_init.o
+ .debug_line    0x00000000       0x4a periph_init.o
+ .debug_str     0x00000000      0x1a8 periph_init.o
+ .comment       0x00000000       0x31 periph_init.o
+ .debug_frame   0x00000000       0x24 periph_init.o
  .text          0x00000000        0x0 PWM.o
  .data          0x00000000        0x0 PWM.o
  .bss           0x00000000        0x0 PWM.o
@@ -317,7 +324,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0xfba
+.text           0x00000000      0xfec
  *(.vectors)
  .vectors       0x00000000       0x54 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.90/gcc/dev/atmega16/avr5/crtatmega16.o
                 0x00000000                __vector_default
@@ -414,80 +421,83 @@ END GROUP
  .text.lcd_clrscr
                 0x00000392       0x14 hd44780.o
                 0x00000392                lcd_clrscr
+ .text.lcd_putc
+                0x000003a6       0x1c hd44780.o
+                0x000003a6                lcd_putc
+ .text.lcd_puts
+                0x000003c2       0x3a hd44780.o
+                0x000003c2                lcd_puts
  .text.lcd_init
-                0x000003a6      0x1e6 hd44780.o
-                0x000003a6                lcd_init
+                0x000003fc      0x1e6 hd44780.o
+                0x000003fc                lcd_init
  .text.__vector_3
-                0x0000058c      0x2a4 periodic.o
-                0x0000058c                __vector_3
- .text.main     0x00000830        0xc Main.o
-                0x00000830                main
+                0x000005e2      0x2a4 periodic.o
+                0x000005e2                __vector_3
+ .text.main     0x00000886       0x14 Main.o
+                0x00000886                main
  .text._Z11push_buttonhhR6Button
-                0x0000083c       0x3c Main.o
-                0x0000083c                _Z11push_buttonhhR6Button
+                0x0000089a       0x3c Main.o
+                0x0000089a                _Z11push_buttonhhR6Button
  .text._GLOBAL__sub_I_pwm
-                0x00000878        0xa Main.o
+                0x000008d6        0xa Main.o
  .text._GLOBAL__sub_D_pwm
-                0x00000882        0xa Main.o
- .text._Z10peiph_initv
-                0x0000088c       0x2c periph_init.o
-                0x0000088c                _Z10peiph_initv
+                0x000008e0        0xa Main.o
  .text._ZN3PWMC2Ev
-                0x000008b8       0x42 PWM.o
-                0x000008b8                _ZN3PWMC1Ev
-                0x000008b8                _ZN3PWMC2Ev
+                0x000008ea       0x42 PWM.o
+                0x000008ea                _ZN3PWMC1Ev
+                0x000008ea                _ZN3PWMC2Ev
  .text._ZN3PWM13set_prescalerERKh
-                0x000008fa       0x4c PWM.o
-                0x000008fa                _ZN3PWM13set_prescalerERKh
+                0x0000092c       0x4c PWM.o
+                0x0000092c                _ZN3PWM13set_prescalerERKh
  .text._ZN3PWM11select_modeERKh
-                0x00000946       0x3a PWM.o
-                0x00000946                _ZN3PWM11select_modeERKh
+                0x00000978       0x3a PWM.o
+                0x00000978                _ZN3PWM11select_modeERKh
  .text._ZN3PWM13save_settingsEv
-                0x00000980       0x34 PWM.o
-                0x00000980                _ZN3PWM13save_settingsEv
+                0x000009b2       0x34 PWM.o
+                0x000009b2                _ZN3PWM13save_settingsEv
  .text._ZN3PWM12set_mode_pwmENS_5_MODEE
-                0x000009b4       0x60 PWM.o
-                0x000009b4                _ZN3PWM12set_mode_pwmENS_5_MODEE
+                0x000009e6       0x60 PWM.o
+                0x000009e6                _ZN3PWM12set_mode_pwmENS_5_MODEE
  .text._ZN3PWMD2Ev
-                0x00000a14       0x16 PWM.o
-                0x00000a14                _ZN3PWMD2Ev
-                0x00000a14                _ZN3PWMD1Ev
- .text.libgcc   0x00000a2a        0xc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_tablejump2.o)
-                0x00000a2a                __tablejump2__
+                0x00000a46       0x16 PWM.o
+                0x00000a46                _ZN3PWMD2Ev
+                0x00000a46                _ZN3PWMD1Ev
+ .text.libgcc   0x00000a5c        0xc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_tablejump2.o)
+                0x00000a5c                __tablejump2__
  .text.avr-libc
-                0x00000a36      0x3a4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(vfprintf_std.o)
-                0x00000a36                vfprintf
+                0x00000a68      0x3a4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(vfprintf_std.o)
+                0x00000a68                vfprintf
  .text.avr-libc
-                0x00000dda       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(strnlen_P.o)
-                0x00000dda                strnlen_P
+                0x00000e0c       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(strnlen_P.o)
+                0x00000e0c                strnlen_P
  .text.avr-libc
-                0x00000df0       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(strnlen.o)
-                0x00000df0                strnlen
+                0x00000e22       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(strnlen.o)
+                0x00000e22                strnlen
  .text.avr-libc
-                0x00000e06       0x70 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(fputc.o)
-                0x00000e06                fputc
+                0x00000e38       0x70 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(fputc.o)
+                0x00000e38                fputc
  .text.avr-libc
-                0x00000e76       0xbc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(ultoa_invert.o)
-                0x00000e76                __ultoa_invert
+                0x00000ea8       0xbc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(ultoa_invert.o)
+                0x00000ea8                __ultoa_invert
  .text.libgcc.prologue
-                0x00000f32       0x38 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_prologue.o)
-                0x00000f32                __prologue_saves__
+                0x00000f64       0x38 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_prologue.o)
+                0x00000f64                __prologue_saves__
  .text.libgcc.prologue
-                0x00000f6a       0x36 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_epilogue.o)
-                0x00000f6a                __epilogue_restores__
-                0x00000fa0                . = ALIGN (0x2)
+                0x00000f9c       0x36 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_epilogue.o)
+                0x00000f9c                __epilogue_restores__
+                0x00000fd2                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00000fa0        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
-                0x00000fa0                _exit
-                0x00000fa0                exit
+ .fini9         0x00000fd2        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
+                0x00000fd2                _exit
+                0x00000fd2                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
  *(.fini7)
  *(.fini7)
  *(.fini6)
- .fini6         0x00000fa0       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_dtors.o)
-                0x00000fa0                __do_global_dtors
+ .fini6         0x00000fd2       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_dtors.o)
+                0x00000fd2                __do_global_dtors
  *(.fini6)
  *(.fini5)
  *(.fini5)
@@ -500,11 +510,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00000fb6        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
+ .fini0         0x00000fe8        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x00000fba                _etext = .
+                0x00000fec                _etext = .
 
-.data           0x00800060        0x8 load address 0x00000fba
+.data           0x00800060       0x18 load address 0x00000fec
                 0x00800060                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -521,32 +531,35 @@ END GROUP
                 0x00800066                coeff
  *(.rodata)
  *(.rodata*)
+ .rodata.str1.1
+                0x00800068        0xf Main.o
  *(.gnu.linkonce.d*)
-                0x00800068                . = ALIGN (0x2)
-                0x00800068                _edata = .
-                0x00800068                PROVIDE (__data_end, .)
+                0x00800078                . = ALIGN (0x2)
+ *fill*         0x00800077        0x1 
+                0x00800078                _edata = .
+                0x00800078                PROVIDE (__data_end, .)
 
-.bss            0x00800068       0x1a
-                0x00800068                PROVIDE (__bss_start, .)
+.bss            0x00800078       0x1a
+                0x00800078                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
- .bss.enc       0x00800068        0x3 periodic.o
-                0x00800068                enc
- .bss.state     0x0080006b        0x2 periodic.o
-                0x0080006b                state
- .bss.pwm       0x0080006d       0x15 Main.o
-                0x0080006d                pwm
+ .bss.enc       0x00800078        0x3 periodic.o
+                0x00800078                enc
+ .bss.state     0x0080007b        0x2 periodic.o
+                0x0080007b                state
+ .bss.pwm       0x0080007d       0x15 Main.o
+                0x0080007d                pwm
  *(COMMON)
-                0x00800082                PROVIDE (__bss_end, .)
-                0x00000fba                __data_load_start = LOADADDR (.data)
-                0x00000fc2                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00800092                PROVIDE (__bss_end, .)
+                0x00000fec                __data_load_start = LOADADDR (.data)
+                0x00001004                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800082        0x0
-                0x00800082                PROVIDE (__noinit_start, .)
+.noinit         0x00800092        0x0
+                0x00800092                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x00800082                PROVIDE (__noinit_end, .)
-                0x00800082                _end = .
-                0x00800082                PROVIDE (__heap_start, .)
+                0x00800092                PROVIDE (__noinit_end, .)
+                0x00800092                _end = .
+                0x00800092                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -591,7 +604,6 @@ END GROUP
                                  0x31 (size before relaxing)
  .comment       0x00000030       0x31 periodic.o
  .comment       0x00000030       0x31 Main.o
- .comment       0x00000030       0x31 periph_init.o
  .comment       0x00000030       0x31 PWM.o
  .comment       0x00000030       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(vfprintf_std.o)
                                  0x2d (size before relaxing)
@@ -617,7 +629,7 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x138
+.debug_aranges  0x00000000      0x118
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x78 hd44780.o
@@ -626,56 +638,48 @@ END GROUP
  .debug_aranges
                 0x00000098       0x38 Main.o
  .debug_aranges
-                0x000000d0       0x20 periph_init.o
- .debug_aranges
-                0x000000f0       0x48 PWM.o
+                0x000000d0       0x48 PWM.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0xf1b
+.debug_info     0x00000000      0xed2
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x253 hd44780.o
  .debug_info    0x00000253      0x463 periodic.o
- .debug_info    0x000006b6      0x3a7 Main.o
- .debug_info    0x00000a5d       0x82 periph_init.o
- .debug_info    0x00000adf      0x43c PWM.o
+ .debug_info    0x000006b6      0x3e0 Main.o
+ .debug_info    0x00000a96      0x43c PWM.o
 
-.debug_abbrev   0x00000000      0x772
+.debug_abbrev   0x00000000      0x737
  *(.debug_abbrev)
  .debug_abbrev  0x00000000       0xea hd44780.o
  .debug_abbrev  0x000000ea      0x1f3 periodic.o
- .debug_abbrev  0x000002dd      0x22f Main.o
- .debug_abbrev  0x0000050c       0x45 periph_init.o
- .debug_abbrev  0x00000551      0x221 PWM.o
+ .debug_abbrev  0x000002dd      0x239 Main.o
+ .debug_abbrev  0x00000516      0x221 PWM.o
 
-.debug_line     0x00000000      0x604
+.debug_line     0x00000000      0x5b5
  *(.debug_line .debug_line.* .debug_line_end)
- .debug_line    0x00000000      0x262 hd44780.o
- .debug_line    0x00000262      0x110 periodic.o
- .debug_line    0x00000372      0x11f Main.o
- .debug_line    0x00000491       0x4a periph_init.o
- .debug_line    0x000004db      0x129 PWM.o
+ .debug_line    0x00000000      0x264 hd44780.o
+ .debug_line    0x00000264      0x110 periodic.o
+ .debug_line    0x00000374      0x118 Main.o
+ .debug_line    0x0000048c      0x129 PWM.o
 
-.debug_frame    0x00000000      0x33c
+.debug_frame    0x00000000      0x318
  *(.debug_frame)
  .debug_frame   0x00000000      0x1a4 hd44780.o
  .debug_frame   0x000001a4       0x7c periodic.o
  .debug_frame   0x00000220       0x54 Main.o
- .debug_frame   0x00000274       0x24 periph_init.o
- .debug_frame   0x00000298       0xa4 PWM.o
+ .debug_frame   0x00000274       0xa4 PWM.o
 
-.debug_str      0x00000000      0x5ac
+.debug_str      0x00000000      0x57e
  *(.debug_str)
- .debug_str     0x00000000      0x1d4 hd44780.o
-                                0x20d (size before relaxing)
- .debug_str     0x000001d4      0x2da periodic.o
+ .debug_str     0x00000000      0x1d6 hd44780.o
+                                0x20f (size before relaxing)
+ .debug_str     0x000001d6      0x2da periodic.o
                                 0x39c (size before relaxing)
- .debug_str     0x000004ae       0xa8 Main.o
-                                0x3cb (size before relaxing)
- .debug_str     0x00000556       0x15 periph_init.o
-                                0x1a8 (size before relaxing)
- .debug_str     0x0000056b       0x41 PWM.o
+ .debug_str     0x000004b0       0x8d Main.o
+                                0x3c9 (size before relaxing)
+ .debug_str     0x0000053d       0x41 PWM.o
                                 0x328 (size before relaxing)
 
 .debug_loc      0x00000000      0x728
@@ -703,13 +707,12 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0xe8
+.debug_ranges   0x00000000       0xd8
  *(.debug_ranges)
  .debug_ranges  0x00000000       0x68 hd44780.o
  .debug_ranges  0x00000068       0x10 periodic.o
  .debug_ranges  0x00000078       0x28 Main.o
- .debug_ranges  0x000000a0       0x10 periph_init.o
- .debug_ranges  0x000000b0       0x38 PWM.o
+ .debug_ranges  0x000000a0       0x38 PWM.o
 
 .debug_macro
  *(.debug_macro)

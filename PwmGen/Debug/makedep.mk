@@ -2,7 +2,7 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
-hd44780.c
+LCD\hd44780.c
 
 periodic.cpp
 

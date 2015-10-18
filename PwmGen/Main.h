@@ -10,7 +10,7 @@
 #include "periph_init.h"
 #include "PWM.h"
 #include "periodic.h"
-#include "hd44780.h"
+#include "LCD/hd44780.h"
 
 
 #define BIT0 (1<<0)

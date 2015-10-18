@@ -1,6 +1,7 @@
 #ifndef HD44780_SETTINGS_H
 #define HD44780_SETTINGS_H
 
+
 #ifndef F_CPU
 #define F_CPU                    16000000     // Set Clock Frequency
 #endif

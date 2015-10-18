@@ -14,8 +14,8 @@ Main.d Main.o: .././Main.cpp .././Main.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\delay.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\delay_basic.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h \
- .././periph_init.h .././PWM.h .././periodic.h .././hd44780.h \
- .././hd44780_settings.h
+ .././periph_init.h .././PWM.h .././periodic.h .././LCD/hd44780.h \
+ .././LCD/hd44780_settings.h
 
 .././Main.h:
 
@@ -55,6 +55,6 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 
 .././periodic.h:
 
-.././hd44780.h:
+.././LCD/hd44780.h:
 
-.././hd44780_settings.h:
+.././LCD/hd44780_settings.h:
