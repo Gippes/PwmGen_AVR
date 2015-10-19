@@ -6,7 +6,9 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <util/delay.h>
+#include <stdio.h>
 #include "periph_init.h"
 #include "PWM.h"
 #include "periodic.h"
