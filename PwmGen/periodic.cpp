@@ -38,14 +38,16 @@ ISR(TIMER2_COMP_vect)
 	
 	if(push_button(PIND, 2, pwm_mode_select))
 	{
-		if(state.pwm_mode > 3)
+		if(state.pwm_mode > 2)
 			state.pwm_mode = 0;
+		lcd_clrscr();
+		lcd_goto(0);
 		switch(state.pwm_mode++)
 		{
-			case 0: pwm.set_mode_pwm(PWM::CTC);					break;
-			case 1: pwm.set_mode_pwm(PWM::FAST_PWM);			break;
-			case 2: pwm.set_mode_pwm(PWM::PHASE_CORRECT);		break;
-			case 3: pwm.set_mode_pwm(PWM::PHASE_FREQ_CORRECT);	break;
+			case 0: pwm.set_mode_pwm(PWM::CTC);		lcd_puts("CTC "); lcd_goto(40); lcd_puts("Freq: ");		break;
+			case 1: pwm.set_mode_pwm(PWM::FAST_PWM);	lcd_puts("Fast PWM "); lcd_goto(40); lcd_puts("Freq: ");	break;
+			case 2: pwm.set_mode_pwm(PWM::PHASE_CORRECT);	lcd_puts("Phase Correct PWM "); lcd_goto(40); lcd_puts("Freq: ");	break;
+			//case 3: pwm.set_mode_pwm(PWM::PHASE_FREQ_CORRECT);	lcd_puts(" "); lcd_goto(4);	break;
 		}
 	}
 	
@@ -55,18 +57,17 @@ ISR(TIMER2_COMP_vect)
 		if(enc.init == false)
 		{
 			enc.detect = true;
+			#define  size 5
+			char buff[size];
 			uint16_t tmp = OCR1AH<<8 | OCR1AL;
+			
 			if(PINA & BIT1)
 			{
 				if(coeff <= 0xFFFF - tmp)
 				{
 					tmp += coeff;
-					char buff[10];
 					OCR1AH = (uint8_t)(tmp>>8);
 					OCR1AL = (uint8_t)tmp;
-					utoa(tmp,buff,10);
-					lcd_clrscr();
-					lcd_puts(buff);
 				}
 				else
 				{
@@ -81,10 +82,6 @@ ISR(TIMER2_COMP_vect)
 					tmp -= coeff;
 					OCR1AH = (uint8_t)(tmp>>8);
 					OCR1AL = (uint8_t)tmp;
-					char buff[10];
-					utoa(tmp,buff,10);
-					lcd_clrscr();
-					lcd_puts(buff);
 				}
 				else
 				{
@@ -92,6 +89,13 @@ ISR(TIMER2_COMP_vect)
 					OCR1AL = 0x00;
 				}
 			}
+			
+			tmp = OCR1AH<<8 | OCR1AL;
+			tmp == 0 ? tmp = 1 : tmp;
+			uint32_t tmpL = F_CPU / (1000 * tmp * 2);
+			utoa(tmpL,buff,size);
+			lcd_goto(46);
+			lcd_puts(buff);
 								
 			enc.delay = 10;
 			enc.init = true;
