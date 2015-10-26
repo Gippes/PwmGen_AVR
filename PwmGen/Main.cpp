@@ -8,7 +8,7 @@ int main( void )
 	lcd_clrscr();
 		
 	sei();
-	
+
 	while(1)
 	{
 		
