@@ -19,7 +19,7 @@ Main.d Main.o: .././Main.cpp .././Main.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\4.9.2\include\stdarg.h \
  .././periph_init.h .././PWM.h .././periodic.h .././LCD/hd44780.h \
- .././LCD/hd44780_settings.h
+ .././LCD/hd44780_settings.h .././screen.h
 
 .././Main.h:
 
@@ -70,3 +70,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\
 .././LCD/hd44780.h:
 
 .././LCD/hd44780_settings.h:
+
+.././screen.h:

@@ -2,6 +2,9 @@
 
 #define LED_FLASHING PORTD ^= BIT4
 
+bool refresh_freq = true;
+uint8_t tim_150ms = 150;
+
 extern PWM	pwm;
 uint16_t coeff = 1;
 States state = {0,0,0};
@@ -36,19 +39,19 @@ ISR(TIMER2_COMP_vect)
 		}
 	}
 	
+	//выбор режима ШИМ
 	if(push_button(PIND, 2, pwm_mode_select))
-	{
+	{		
 		if(state.pwm_mode > 2)
 			state.pwm_mode = 0;
-		lcd_clrscr();
-		lcd_goto(0);
 		switch(state.pwm_mode++)
 		{
-			case 0: pwm.set_mode_pwm(PWM::CTC);		lcd_puts("CTC "); lcd_goto(40); lcd_puts("Freq: ");		break;
-			case 1: pwm.set_mode_pwm(PWM::FAST_PWM);	lcd_puts("Fast PWM "); lcd_goto(40); lcd_puts("Freq: ");	break;
-			case 2: pwm.set_mode_pwm(PWM::PHASE_CORRECT);	lcd_puts("Phase Corr. PWM "); lcd_goto(40); lcd_puts("Freq: ");	break;
+			case 0: pwm.set_mode_pwm(PWM::CTC);				break;
+			case 1: pwm.set_mode_pwm(PWM::FAST_PWM);		break;
+			case 2: pwm.set_mode_pwm(PWM::PHASE_CORRECT);	break;
 			//case 3: pwm.set_mode_pwm(PWM::PHASE_FREQ_CORRECT);	lcd_puts(" "); lcd_goto(4);	break;
 		}
+		refresh_freq = false;
 	}
 	
 	//проверка энкодера
@@ -57,7 +60,6 @@ ISR(TIMER2_COMP_vect)
 		if(enc.init == false)
 		{
 			enc.detect = true;
-			char buff[5];
 			uint16_t tmp = OCR1AH<<8 | OCR1AL;
 			
 			if(PINA & BIT1)
@@ -88,26 +90,7 @@ ISR(TIMER2_COMP_vect)
 					OCR1AL = 0x00;
 				}
 			}
-			
-			lcd_goto(46);
-			tmp = OCR1AH<<8 | OCR1AL;
-			switch (state.pwm_mode - 1)
-			{
-				case 0: uint32_t tmpL = F_CPU / (2000 * (tmp+1)); 
-						utoa(tmpL,buff,10);
-						lcd_puts(buff);
-						lcd_puts(" KHz");
-						if (tmpL < 1)
-						{
-							tmpL = F_CPU/(2 * (tmp+1));
-							utoa(tmpL,buff,10);
-							lcd_puts(buff);
-							lcd_puts(" Hz");
-						}
-						break; 
-			}										
-			
-								
+										
 			enc.delay = 10;
 			enc.init = true;
 		}
@@ -115,7 +98,16 @@ ISR(TIMER2_COMP_vect)
 		{
 			enc.detect = false;
 			enc.init = false;
+			refresh_freq = false;
 		}
+	}
+	
+	
+	//1 раз в 100 мс
+	if((refresh_freq == false) && (!tim_150ms--))
+	{
+		refresh_freq = screen_refresh();		//обновление lcd
+		tim_150ms = 150;		
 	}
 	
 

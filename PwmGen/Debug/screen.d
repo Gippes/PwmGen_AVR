@@ -1,4 +1,4 @@
-periodic.d periodic.o: .././periodic.cpp .././periodic.h .././Main.h \
+screen.d screen.o: .././screen.cpp .././screen.h .././Main.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\sfr_defs.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\inttypes.h \
@@ -18,10 +18,10 @@ periodic.d periodic.o: .././periodic.cpp .././periodic.h .././Main.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\4.9.2\include\stdarg.h \
- .././periph_init.h .././PWM.h .././LCD/hd44780.h \
- .././LCD/hd44780_settings.h .././screen.h
+ .././periph_init.h .././PWM.h .././periodic.h .././LCD/hd44780.h \
+ .././LCD/hd44780_settings.h
 
-.././periodic.h:
+.././screen.h:
 
 .././Main.h:
 
@@ -67,8 +67,8 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\
 
 .././PWM.h:
 
+.././periodic.h:
+
 .././LCD/hd44780.h:
 
 .././LCD/hd44780_settings.h:
-
-.././screen.h:

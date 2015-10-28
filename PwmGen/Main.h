@@ -13,6 +13,7 @@
 #include "PWM.h"
 #include "periodic.h"
 #include "LCD/hd44780.h"
+#include "screen.h"
 
 
 #define BIT0 (1<<0)

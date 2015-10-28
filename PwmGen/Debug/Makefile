@@ -41,7 +41,8 @@ C_SRCS +=  \
 ../periodic.cpp \
 ../Main.cpp \
 ../periph_init.cpp \
-../PWM.cpp
+../PWM.cpp \
+../screen.cpp
 
 
 PREPROCESSING_SRCS += 
@@ -55,28 +56,32 @@ hd44780.o \
 periodic.o \
 Main.o \
 periph_init.o \
-PWM.o
+PWM.o \
+screen.o
 
 OBJS_AS_ARGS +=  \
 hd44780.o \
 periodic.o \
 Main.o \
 periph_init.o \
-PWM.o
+PWM.o \
+screen.o
 
 C_DEPS +=  \
 hd44780.d \
 periodic.d \
 Main.d \
 periph_init.d \
-PWM.d
+PWM.d \
+screen.d
 
 C_DEPS_AS_ARGS +=  \
 hd44780.d \
 periodic.d \
 Main.d \
 periph_init.d \
-PWM.d
+PWM.d \
+screen.d
 
 OUTPUT_FILE_PATH +=PwmGen.elf
 
@@ -92,6 +97,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

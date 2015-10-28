@@ -5,13 +5,12 @@ int main( void )
 {
 	peiph_init();
 	lcd_init();
-	lcd_clrscr();
-		
+	
 	sei();
 
 	while(1)
 	{
-		
+			
 	}
 }
 
