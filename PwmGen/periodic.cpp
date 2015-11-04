@@ -23,6 +23,7 @@ ISR(TIMER2_COMP_vect)
 		if(++state.prescaller > 4)
 			state.prescaller = 0;
 		pwm.set_prescaler(state.prescaller);
+		refresh_lcd = false;
 	}
 	
 	//коэфф. инкремента 

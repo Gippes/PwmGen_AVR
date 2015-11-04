@@ -31,6 +31,7 @@ PWM::PWM()
 	OCR1AH = 0;	OCR1AL = 0;									// обнуление регистра сравнения выходного сигнала
 	
 	DDRD	|=	OC1A_bit;									// OC1A ON
+	prescaller_value = 1;
 }
 
 // выбор деления входной частоты 
@@ -39,12 +40,17 @@ void PWM::set_prescaler(const uint8_t &state)
 	TCCR1B &=~ ((1<<CS12) | (1<<CS11) | (1<<CS10));
 	switch(state)
 	{
-		case 0: TCCR1B |= (0<<CS12) | (0<<CS11) | (1<<CS10);  break;
-		case 1: TCCR1B |= (0<<CS12) | (1<<CS11) | (0<<CS10);  break;
-		case 2: TCCR1B |= (0<<CS12) | (1<<CS11) | (1<<CS10);  break;
-		case 3: TCCR1B |= (1<<CS12) | (0<<CS11) | (0<<CS10);  break;
-		case 4:	TCCR1B |= (1<<CS12) | (0<<CS11) | (1<<CS10);  break;
+		case 0: TCCR1B |= (0<<CS12) | (0<<CS11) | (1<<CS10); prescaller_value = 1;  break;	// clk/1
+		case 1: TCCR1B |= (0<<CS12) | (1<<CS11) | (0<<CS10); prescaller_value = 8;	break;	// clk/8
+		case 2: TCCR1B |= (0<<CS12) | (1<<CS11) | (1<<CS10); prescaller_value = 64; break;	// clk/32
+		case 3: TCCR1B |= (1<<CS12) | (0<<CS11) | (0<<CS10); prescaller_value = 256;break;	// clk/64
+		case 4:	TCCR1B |= (1<<CS12) | (0<<CS11) | (1<<CS10); prescaller_value = 1024;break;	// clk/128
 	}
+}
+
+uint16_t PWM::get_prescaler_value() const
+{
+	return prescaller_value;
 }
 
 void PWM::save_settings()

@@ -29,7 +29,8 @@ struct settings
 class PWM
 {
 private:
-	uint8_t mode :3;	
+	uint8_t mode :3;
+	uint16_t prescaller_value;	
 	settings CTC_settings; 
 	settings FastPWM_settings;
 	settings PhaseCorrect_settings;
@@ -40,6 +41,7 @@ private:
 public:
 	enum _MODE {INITIAL = 0, FAST_PWM, PHASE_CORRECT,PHASE_FREQ_CORRECT, CTC};
 	PWM();
+	uint16_t get_prescaler_value() const;
 	void set_prescaler(const uint8_t &state);
 	void set_mode_pwm(_MODE _M);
 	~PWM();
