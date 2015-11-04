@@ -7,7 +7,8 @@ int main( void )
 	lcd_init();
 	
 	sei();
-
+	
+	pwm.set_mode_pwm(PWM::CTC);
 	while(1)
 	{
 			

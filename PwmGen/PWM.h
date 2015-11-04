@@ -34,14 +34,14 @@ private:
 	settings FastPWM_settings;
 	settings PhaseCorrect_settings;
 	settings PhaseCorrectFreq_settings;
+	settings* select_mode(const uint8_t &mode);
+	void save_settings();
 	
 public:
 	enum _MODE {INITIAL = 0, FAST_PWM, PHASE_CORRECT,PHASE_FREQ_CORRECT, CTC};
 	PWM();
 	void set_prescaler(const uint8_t &state);
-	void save_settings();
 	void set_mode_pwm(_MODE _M);
-	settings* select_mode(const uint8_t &mode);
 	~PWM();
 };
 

@@ -2,7 +2,7 @@
 
 #define LED_FLASHING PORTD ^= BIT4
 
-bool refresh_freq = true;
+bool refresh_lcd = false;
 uint8_t tim_150ms = 150;
 
 extern PWM	pwm;
@@ -20,38 +20,39 @@ ISR(TIMER2_COMP_vect)
 	//делитель clk
 	if(push_button(PIND, 6, freq_div))
 	{
-		if(state.prescaller > 4)
+		if(++state.prescaller > 4)
 			state.prescaller = 0;
-		pwm.set_prescaler(state.prescaller++);
+		pwm.set_prescaler(state.prescaller);
 	}
 	
 	//коэфф. инкремента 
 	if (push_button(PIND, 3, mult_div))
 	{
-		if(state.coeff > 4)
+		if(++state.coeff > 3)
 			state.coeff = 0;
-		switch(state.coeff++)
+		switch(state.coeff)
 		{
 			case 0: coeff = 1;		break;
 			case 1: coeff = 10;		break;
 			case 2: coeff = 100;	break;
 			case 3: coeff = 1000;	break;
 		}
+		refresh_lcd = false;
 	}
 	
 	//выбор режима ШИМ
 	if(push_button(PIND, 2, pwm_mode_select))
-	{		
-		if(state.pwm_mode > 2)
+	{
+		if(++state.pwm_mode > 2)
 			state.pwm_mode = 0;
-		switch(state.pwm_mode++)
+		switch(state.pwm_mode)
 		{
 			case 0: pwm.set_mode_pwm(PWM::CTC);				break;
 			case 1: pwm.set_mode_pwm(PWM::FAST_PWM);		break;
 			case 2: pwm.set_mode_pwm(PWM::PHASE_CORRECT);	break;
 			//case 3: pwm.set_mode_pwm(PWM::PHASE_FREQ_CORRECT);	lcd_puts(" "); lcd_goto(4);	break;
 		}
-		refresh_freq = false;
+		refresh_lcd = false;
 	}
 	
 	//проверка энкодера
@@ -98,15 +99,15 @@ ISR(TIMER2_COMP_vect)
 		{
 			enc.detect = false;
 			enc.init = false;
-			refresh_freq = false;
+			refresh_lcd = false;
 		}
 	}
 	
 	
 	//1 раз в 100 мс
-	if((refresh_freq == false) && (!tim_150ms--))
+	if((refresh_lcd == false) && (!tim_150ms--))
 	{
-		refresh_freq = screen_refresh();		//обновление lcd
+		refresh_lcd = screen_refresh();		//обновление lcd
 		tim_150ms = 150;		
 	}
 	
